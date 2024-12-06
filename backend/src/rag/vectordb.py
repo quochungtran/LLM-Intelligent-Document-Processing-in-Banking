@@ -8,7 +8,7 @@ from qdrant_client.models import PointStruct, Distance, VectorParams
 logger = logging.getLogger(__name__)
 
 
-class BaseVectorDatabase(ABC):
+class VectorDBQueryManagement(ABC):
     @abstractmethod
     def create_collection(self, name: str, vector_size: int, distance_op: str):
         """
@@ -19,7 +19,6 @@ class BaseVectorDatabase(ABC):
             distance: Distance metric for similarity search (default: "DOT").
         """
         pass
-
 
     @abstractmethod
     def add_vectors(self, collection_name: str, vectors: dict):
@@ -41,16 +40,24 @@ class BaseVectorDatabase(ABC):
             limit: Number of results to return (default: 4).
         """
         pass
+    
+    @abstractmethod
+    def get_client():
+        """
+        get client
+        Args:
+            vector_db_client
+        """
+        pass
 
-
-class QdrantDatabase(BaseVectorDatabase):
+class QdrantQueryManagement(VectorDBQueryManagement):
     def __init__(self, url: str):
         self.client = QdrantClient(url=url)
     
-    def create_collection(self, name, vector_size, distance_op):
+    def create_collection(self, name, vector_size=1536, distance_op=Distance.DOT):
         return self.client.create_collection(
             collection_name=name,
-            vectors_config=VectorParams(size=1536, distance=Distance.DOT)
+            vectors_config=VectorParams(size=vector_size, distance=distance_op)
         )
     
     def add_vectors(self, collection_name: str, vectors: dict):
@@ -65,3 +72,6 @@ class QdrantDatabase(BaseVectorDatabase):
             collection_name=collection_name, query_vector=query_vector, limit=limit
         )
         return [x.payload for x in results]
+
+    def get_client(self):
+        return self.client
