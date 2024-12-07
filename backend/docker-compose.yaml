@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  idp-api:
+    build: .
+    hostname: idp-api
+    container_name: idp-api
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - .:/app/src
+    ports:
+      - 8082:8081
