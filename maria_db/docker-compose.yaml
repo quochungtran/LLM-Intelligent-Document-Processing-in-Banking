@@ -1,0 +1,24 @@
+version: '3.8'
+
+networks:
+  internal-network:
+    name: internal-network
+    external: true
+
+services:
+  mariadb-tiny:
+    image: mariadb:11.5.1-ubi9-rc
+    container_name: mariadb-tiny
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - tiny_sql_volumn:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3308:3306"
+    networks:
+      - internal-network
+
+volumes:
+  tiny_sql_volumn:
