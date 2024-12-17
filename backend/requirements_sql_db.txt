@@ -1,0 +1,5 @@
+pymysql==1.1.1
+mysql-connector-python
+mysqlclient>=2.2.4
+SQLAlchemy==2.0.32
+databases==0.9.0

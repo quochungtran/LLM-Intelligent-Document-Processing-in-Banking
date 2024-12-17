@@ -1,3 +1,0 @@
-qdrant-client==1.10.1
-django-celery-results==2.5.1
-django-celery-beat==2.6.0

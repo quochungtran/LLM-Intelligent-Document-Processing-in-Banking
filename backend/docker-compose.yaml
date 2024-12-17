@@ -1,5 +1,10 @@
 version: '3.8'
 
+networks:
+  internal-network:
+    name: internal-network
+    external: true
+
 services:
   idp-api:
     build: .
@@ -9,9 +14,11 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/appllm/src
+      - .:/appllm
     ports:
       - 8082:8081
+    networks:
+      - internal-network
 
   idp-worker:
     build: .
@@ -24,7 +31,37 @@ services:
     environment:
       - DEBUG=False
     volumes:
-      - .:/usr/src/app
+      - .:/appllm
       - worker_volume:/var/logs/
     networks:
       - internal-network
+
+  qdrant-db:
+    image: qdrant/qdrant:latest
+    hostname: qdrant-db
+    container_name: qdrant-db
+    restart: always
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    configs:
+      - source: qdrant_config
+        target: /qdrant/config/production.yaml
+    volumes:
+      - qdrant_volume:/qdrant/storage
+    networks:
+      - internal-network
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO   
+
+volumes:
+  worker_volume:
+  qdrant_volume:
+

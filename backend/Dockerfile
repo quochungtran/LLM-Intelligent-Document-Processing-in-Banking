@@ -1,23 +1,36 @@
 FROM python:3.10.12-slim-bullseye
 
+RUN apt update -y \
+    && apt-get install \
+        python3-dev \
+        default-libmysqlclient-dev \
+        build-essential \
+        pkg-config -y \
+    && apt-get clean
+
+# Set working directory
 WORKDIR /appllm
 
-# copy src code into docker folder
-COPY ./src /appllm/src
+# Copy source code
+# copy content of src folder to appllm/src folder
+COPY src /appllm/src 
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "${PYTHONPATH}:/appllm:/appllm/src"
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="${PYTHONPATH}:/appllm:/appllm/src"
 
-# expost port that the container listen this port
+# Expose port
 EXPOSE 8081
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY requirements.txt . 
-COPY requirements_vector_db.txt . 
-RUN pip install -r requirements.txt --no-cache-dir
-RUN pip install -r requirements_vector_db.txt --no-cache-dir
+# Copy and install dependencies
+COPY requirements.txt /appllm
+COPY requirements_sql_db.txt /appllm
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8081"]
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -r requirements_sql_db.txt
+
+
+# Run the application
+CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8081"]
