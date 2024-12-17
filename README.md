@@ -10,5 +10,9 @@ deactivate
 
 # Install dependencies
 
-pip install -r requirements.txt
-pip install -r requirements_vector_db.txt
+pip install -r backend/requirements.txt
+pip install -r backend/requirements_vector_db.txt
+
+# Set up chatbot project
+docker network create internal-network
+

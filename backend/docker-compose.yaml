@@ -9,6 +9,22 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app/src
+      - .:/appllm/src
     ports:
       - 8082:8081
+
+  idp-worker:
+    build: .
+    hostname: idp-worker
+    container_name: idp-worker
+    command: celery -A tasks.celery_app worker --loglevel=debug --logfile=/var/logs/celery.log
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DEBUG=False
+    volumes:
+      - .:/usr/src/app
+      - worker_volume:/var/logs/
+    networks:
+      - internal-network
