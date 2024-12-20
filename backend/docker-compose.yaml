@@ -36,6 +36,20 @@ services:
     networks:
       - internal-network
 
+  valkey-db:
+    image: 'valkey/valkey:bookworm'
+    hostname: valkey-db
+    container_name: valkey-db
+    restart: always
+    ports:
+      - "6379:6379"
+    command:
+      - '--save 60 1' # todo
+    volumes:
+      - valkey_data:/data
+    networks:
+      - internal-network
+
   qdrant-db:
     image: qdrant/qdrant:latest
     hostname: qdrant-db
@@ -64,4 +78,5 @@ configs:
 volumes:
   worker_volume:
   qdrant_volume:
+  valkey_data:
 
