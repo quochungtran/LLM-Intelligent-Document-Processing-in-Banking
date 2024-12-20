@@ -24,7 +24,7 @@ services:
     build: .
     hostname: idp-worker
     container_name: idp-worker
-    command: celery -A tasks.celery_app worker --loglevel=debug --logfile=/var/logs/celery.log
+    command: celery -A src.celery_app worker --loglevel=debug --logfile=/var/logs/celery.log
     restart: always
     env_file:
       - .env
