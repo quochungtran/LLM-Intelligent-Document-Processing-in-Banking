@@ -1,4 +1,4 @@
-CREATE DATABASE chatbot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE demo_bot CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE demo_bot;
 CREATE TABLE chat_conversations (
     id INT NOT NULL AUTO_INCREMENT,
