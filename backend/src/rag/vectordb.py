@@ -3,7 +3,7 @@ import logging
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams
-
+from config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -75,3 +75,6 @@ class QdrantQueryManagement(VectorDBQueryManagement):
 
     def get_client(self):
         return self.client
+    
+
+qdrant_client = QdrantQueryManagement(Config.QDRANT_URL)

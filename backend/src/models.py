@@ -12,7 +12,7 @@ from sqlalchemy.sql import func
 
 from utils import setup_logging
 from database import engine, get_db
-from cache import RedisConversationManager
+from cache import cache
 import os
 
 Base = declarative_base()
@@ -20,10 +20,6 @@ Base.metadata.create_all(bind=engine)
 db =  next(get_db())
 setup_logging()
 logger = logging.getLogger(__name__)
-
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", 6379)
-cache = RedisConversationManager(host=REDIS_HOST, port=REDIS_PORT)
 
 class ChatConversation(Base):
     __tablename__ = 'chat_conversations'

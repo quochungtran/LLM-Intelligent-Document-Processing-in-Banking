@@ -1,6 +1,7 @@
 import logging
 import redis
 from utils import generate_request_id
+from config import Config
 
 class RedisConversationManager:
     def __init__(self, host="localhost", port=6379, db=0):
@@ -48,3 +49,5 @@ class RedisConversationManager:
         except Exception as e:
             logging.exception(f"Delete conversation error: {e}")
             return False    
+        
+cache = RedisConversationManager(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
