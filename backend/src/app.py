@@ -6,7 +6,7 @@ from typing import Dict, Optional
 from celery.result import AsyncResult
 from pydantic import BaseModel
 from src.rag.vectordb import qdrant_client
-from task.llm import llm_handle_message
+from backend.src.task.routing import llm_handle_message
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +38,8 @@ async def complete(data:CompleteRequest):
         response = llm_handle_message(bot_id, user_id, user_message)
         return {"response": response}
     else:
-        task = "123"
-        return {"task_id": task}
+        task = llm_handle_message.delay(bot_id, user_id, user_message)
+        return {"task_id": task.id}
 
 @app.post("/collection/create")
 async def create_vector_collection(data: Dict):
