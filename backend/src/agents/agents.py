@@ -40,7 +40,7 @@ Steps:
 """
 
 # Initialize LLM and Agent
-llm = OpenAI(model="gpt-4")
+llm = OpenAI(model="gpt-4o-mini")
 asking_key_missing_agent = OpenAIAgent.from_tools(
     tools=tools,
     llm=llm,
