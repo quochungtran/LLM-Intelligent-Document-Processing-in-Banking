@@ -1,5 +1,5 @@
 import pytest
-from backend.src.task.routing import detect_route
+from src.task.routing import detect_route
 
 # Mock data for testing
 mock_history = [

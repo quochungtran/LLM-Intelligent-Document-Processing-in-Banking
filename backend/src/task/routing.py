@@ -2,7 +2,8 @@ from celery import shared_task
 from utils import setup_logging
 from models import *
 from brain import openai_chat_complete
-from rag import bot_rag_home_loan_faq, bot_rag_home_loan_recommandation
+from src.task.rag_homeloan import bot_rag_home_loan_faq_answer_message
+from src.task.agent import bot_agent_home_loan_recommandation_answer_message
 import logging
 
 
@@ -42,9 +43,9 @@ def bot_route_answer_message(history, question):
     # detect the route
     route = detect_route(history, question)
     if route == 'homeloan_faq':
-        return bot_rag_home_loan_faq(history, question)
+        return bot_rag_home_loan_faq_answer_message(history, question)
     elif route == 'home_loan_recommandation':
-        return bot_rag_home_loan_recommandation(history, question)
+        return bot_agent_home_loan_recommandation_answer_message(history, question)
     else:
         return "Sorry, I don't understand your question."
 
