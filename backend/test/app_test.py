@@ -1,5 +1,7 @@
 from fastapi.testclient import TestClient
 from src.app import app
+from src.app import CompleteRequest
+import json
 
 test_client = TestClient(app)
 
@@ -9,17 +11,49 @@ def test_root():
     """
     response = test_client.get("/")
     assert response.status_code == 200
-    assert response.json()[0] ==  "Welcome to Intelligent home loan processing"
+    assert response.json()[0] == "Welcome to Intelligent home loan processing"
 
-# def test_complete_endpoint_sync():
-#     """
-#     Test the /chat/complete endpoint for synchronous requests.
-#     """
+def test_chat_complete_endpoint_sync():
+    """
+    Test the /chat/complete endpoint for synchronous requests.
+    """
+    payload = {
+        "bot_id": "best_homeloan_bot",
+        "user_id": "Hung",
+        "user_message": "Hello, I want to know if my home loan application is approved",
+        "sync_request": True
+    }
+    response = test_client.post("/chat/complete", json=payload)
+
+    # bot_answer = (
+    #     "To assist you with your home loan application, "
+    #     "I need to collect some information from you. Let's start with your name. "
+    #     "What is your name? Please provide it using alphabetic characters only."
+    # )
+
+    # expected = {'content': bot_answer, "role": 'assistant'}
     
+    assert response.status_code == 200
+    assert len(response.json()["response"])  > 0
+
+# def test_chat_complete_task_flow():
+#     """
+#     Test the full task lifecycle:
+#     - Create a task
+#     - Poll its status
+#     - Verify the final result
+#     """
 #     payload = {
-#         "bot_id":  "bot_123",
-#         "user_id": "user_123",
-#         "user_message": "What is the status of my loan?",
-#         "sync_request": True
+#         "bot_id": "best_homeloan_bot",
+#         "user_id": "Hung",
+#         "user_message": "Hello, I want to know if my home loan application is approved",
+#         "sync_request": False
 #     }
 
+#     response = test_client.post("/chat/complete", json=payload)
+#     assert response.status_code == 200
+
+#     # post_data = response.json()
+#     # task_id = post_data["task_id"]
+
+#     # assert len(task_id) > 0

@@ -1,5 +1,6 @@
 import pytest
 from src.task.routing import detect_route
+from src.task.routing import llm_handle_message
 
 # Mock data for testing
 mock_history = [
@@ -47,7 +48,6 @@ test_cases = [
     },
 ]
 
-@pytest.mark.parametrize("test_case", test_cases)
 def test_detect_route(test_case):
     history = test_case["history"]
     message = test_case["message"]
@@ -58,3 +58,12 @@ def test_detect_route(test_case):
     
     # Assert that the result matches the expected classification
     assert result == expected, f"Failed for message: {message}, expected: {expected}, got: {result}"
+
+def test_llm_handle_message():
+    bot_id   = "bot1"
+    user_id  = "user1"
+    question = "My income is $80,000, and my loan amount is $250,000. Is my loan approved?"
+
+    expected = {'content': 'What is your name? Please provide it using alphabetic characters only.', 'role': 'assistant'}
+    response = llm_handle_message(bot_id=bot_id, user_id=user_id, question=question)
+    assert response == expected

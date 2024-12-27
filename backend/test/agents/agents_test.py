@@ -83,7 +83,7 @@ test_cases = [
     {
         "history": mock_history,
         "question": "My name is John, my annual income is 60000, and my credit score is 720.",
-        "expected": {'name': 'John', 'income': 60000, 'credit_score': 720},
+        "expected": {"name": "John", "income": 60000, "credit_score": 720},
     },
     # Case 2: User provides invalid income
     {
@@ -95,7 +95,7 @@ test_cases = [
     {
         "history": mock_history_1,
         "question": "ok, my annual income is 80000.",
-        "expected": {'name': 'mia', 'income': 80000, 'credit_score': 700},
+        "expected": {"name": "mia", "income": 80000, "credit_score": 700},
     },
     # Case 4: User provides valid income but not format numeric
     {
@@ -120,4 +120,4 @@ def test_bot_agent_home_loan_recommendation_handle(test_case, monkeypatch):
     # Execute the function
     actual = bot_agent_home_loan_recommandation_handle(history, question)
 
-    assert actual.response == str(expected)
+    assert actual == str(expected)

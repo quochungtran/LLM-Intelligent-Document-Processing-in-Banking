@@ -9,6 +9,7 @@ from sqlalchemy.future import select
 from sqlalchemy import Column, String, Boolean, DateTime, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
+from sqlalchemy.exc import SQLAlchemyError
 
 from utils import setup_logging
 from database import engine, get_db
@@ -69,9 +70,14 @@ def convert_conversation_to_openai_messages(user_conversations):
     return conversation_list
 
 def save_conversation(conversation: ChatConversation):
-    db.add(conversation)
-    db.commit()
-    db.refresh(conversation)
+    try:
+        db.add(conversation)
+        db.commit()
+        db.refresh(conversation)
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Error saving conversation: {e}")
+        raise
 
 def update_chat_conversation(bot_id: str, user_id: str, message: str, is_request: bool = True):
     conversation_id = cache.get_conversation_id(bot_id, user_id)

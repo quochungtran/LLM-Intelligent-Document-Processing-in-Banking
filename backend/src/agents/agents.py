@@ -1,6 +1,5 @@
 from llama_index.agent.openai import OpenAIAgent
 from llama_index.llms.openai import OpenAI
-from llama_index.core.agent import ReActAgent
 from llama_index.core.base.llms.types import MessageRole, ChatMessage
 import logging
 import sys
@@ -68,5 +67,5 @@ def bot_agent_home_loan_recommandation_handle(history, question):
     """
     chat_history = convert_raw_messages_to_chat_messages(history)
     response = asking_key_missing_agent.chat(message=question, chat_history=chat_history)
-    logging.info(f"Agent home loan recommendation response: {response}")
-    return response
+    logging.info(f"Agent home loan recommendation response: {response.response}")
+    return response.response
