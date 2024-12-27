@@ -1,0 +1,19 @@
+version: '3.8'
+
+networks:
+  internal-network:
+    name: internal-network
+    external: true
+
+services:
+  chatbot-ui:
+    build: .
+    hostname: chatbot-ui
+    container_name: chatbot-ui
+    restart: always
+    ports:
+      - "8051:8051"
+    expose:
+      - 8051
+    networks:
+      - internal-network
