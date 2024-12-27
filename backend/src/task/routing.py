@@ -50,7 +50,7 @@ def bot_route_answer_message(history, question):
         return "Sorry, I don't understand your question."
 
 
-@shared_task
+@shared_task()
 def llm_handle_message(bot_id, user_id, question):
     logger.info("Start handle message")
     # Update chat conversation  

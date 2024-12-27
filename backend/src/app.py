@@ -1,7 +1,6 @@
 import logging
-from fastapi import FastAPI, HTTPException
-
 import time
+from fastapi import FastAPI, HTTPException
 from typing import Dict, Optional
 from celery.result import AsyncResult
 from pydantic import BaseModel
@@ -36,10 +35,36 @@ async def complete(data:CompleteRequest):
 
     if data.sync_request:
         response = llm_handle_message(bot_id, user_id, user_message)
-        return {"response": response}
+        return {"response": str(response)}
     else:
         task = llm_handle_message.delay(bot_id, user_id, user_message)
         return {"task_id": task.id}
+
+@app.get("/chat/complete/{task_id}")
+async def get_response(task_id: str):
+    start_time = time.time()
+    while True:
+        task_result = AsyncResult(task_id)
+        task_status = task_result.status
+        logger.info(f"Task result: {task_result.result}")
+
+        if task_status == 'PENDING':
+            if time.time() - start_time > 60:  # 60 seconds timeout
+                return {
+                    "task_id": task_id,
+                    "task_status": task_result.status,
+                    "task_result": task_result.result,
+                    "error_message": "Service timeout, retry please"
+                }
+            else:
+                time.sleep(0.5)  # sleep for 0.5 seconds before retrying
+        else:
+            result = {
+                "task_id": task_id,
+                "task_status": task_result.status,
+                "task_result": task_result.result
+            }
+            return result
 
 @app.post("/collection/create")
 async def create_vector_collection(data: Dict):

@@ -2,6 +2,7 @@ import os
 
 from celery import Celery
 from config import Config
+from celery import shared_task
 
 def get_celery_app(name):
     # Create a Celery app instance
@@ -32,4 +33,4 @@ def get_celery_app(name):
 
 # Discover tasks from submodules
 celery_app = get_celery_app(__name__)
-celery_app.autodiscover_tasks(['task', 'agents', 'rag'])
+celery_app.autodiscover_tasks(['src.task.calculation', 'src.task.routing', 'src.task.rag_homeloan', 'src.task.agent'])

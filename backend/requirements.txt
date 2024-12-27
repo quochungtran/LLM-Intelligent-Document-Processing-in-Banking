@@ -2,6 +2,7 @@ llama-index-llms-openai==0.2.10
 llama-index-readers-wikipedia==0.2.0
 llama-index-postprocessor-cohere-rerank==0.2.1
 llama-index-embeddings-openai==0.2.5
+llama-index-agent-openai==0.3.4
 nest-asyncio==1.6.0 # latest version
 pydantic==2.9.2
 llama-parse==0.5.6

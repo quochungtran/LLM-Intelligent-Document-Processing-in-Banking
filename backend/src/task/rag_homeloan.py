@@ -5,6 +5,6 @@ import logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-@shared_task 
+@shared_task() 
 def bot_rag_home_loan_faq_answer_message(history, question):
     return "todo bot rag home loan faq"
