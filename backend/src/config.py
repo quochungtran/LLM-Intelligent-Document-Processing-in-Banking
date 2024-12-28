@@ -14,3 +14,5 @@ class Config:
     MYSQL_PASSWORD = os.getenv("MYSQL_ROOT_PASSWORD", "root_password")
     MYSQL_HOST = os.getenv("MYSQL_HOST", "0.0.0.0")
     MYSQL_PORT = os.getenv("MYSQL_PORT", "3308")
+
+    XGBOOST_MODEL_PATH=os.getenv("XGBOOST_MODEL_PATH")
