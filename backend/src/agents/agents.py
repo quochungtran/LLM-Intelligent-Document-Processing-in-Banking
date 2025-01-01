@@ -85,12 +85,12 @@ def is_valid_json(json_string):
     except json.JSONDecodeError:
         return False
     
-def bot_agent_home_loan_recommandation_handle(history, question):
+def bot_agent_home_loan_recommandation_handle(history, message):
     """
     Handles the home loan recommendation workflow using the agent.
     """
     chat_history = convert_raw_messages_to_chat_messages(history)
-    response = asking_key_missing_agent.chat(message=question, chat_history=chat_history)
+    response = asking_key_missing_agent.chat(message=message, chat_history=chat_history)
     logging.info(f"Agent home loan recommendation response: {response.response}")
     if is_valid_json(response.response):
         return home_loan_recommandation(json.loads(response.response))

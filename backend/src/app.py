@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from celery.result import AsyncResult
 from pydantic import BaseModel
 from src.rag.vectordb import qdrant_client
-from src.task.routing import llm_handle_message
+from src.task.routing_task import llm_handle_message
 
 logger = logging.getLogger(__name__)
 

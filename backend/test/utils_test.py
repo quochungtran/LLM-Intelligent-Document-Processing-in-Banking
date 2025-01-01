@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import unittest
 from src.utils import *
 
 def test_generate_random_string_length():
@@ -31,3 +32,19 @@ def test_generate_request_id_hashing():
     assert len(request_id) == 33
     assert len(request_id) == len(expected_hash)
     assert request_id != expected_hash
+
+
+class TestUtils(unittest.TestCase):
+
+    def test_process_string_to_list(self):
+        input_string = '["item1", "item2", "item3"]'
+        expected_result = ["item1", "item2", "item3"]
+
+        result = process_string_to_list(input_string)
+        self.assertEqual(result, expected_result)
+
+    def test_get_pattern(self):
+        self.assertEqual(get_pattern("http://example.com/document.pdf"), "pdf")
+        self.assertEqual(get_pattern("https://example.com"), "http")
+        self.assertEqual(get_pattern("document.pdf"), "pdf")  # Assuming os.path.isfile is False for testing
+        self.assertEqual(get_pattern("unknownfile"), "unknown")

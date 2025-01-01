@@ -33,4 +33,4 @@ def get_celery_app(name):
 
 # Discover tasks from submodules
 celery_app = get_celery_app(__name__)
-celery_app.autodiscover_tasks(['src.task.calculation', 'src.task.routing', 'src.task.rag_homeloan', 'src.task.agent'])
+celery_app.autodiscover_tasks(['src.task.calculation_task', 'src.task.routing_task', 'src.task.rag_task', 'src.task.agent_task'])

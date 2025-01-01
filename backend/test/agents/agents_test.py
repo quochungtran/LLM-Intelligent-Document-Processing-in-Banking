@@ -1,10 +1,9 @@
 import pytest
-from src.agents.agents import bot_agent_home_loan_recommandation_handle
-
-
 import pytest
 from llama_index.core.base.llms.types import MessageRole, ChatMessage
 from src.agents.agents import convert_raw_messages_to_chat_messages
+from src.agents.agents import bot_agent_home_loan_recommandation_handle
+import json
 
 # Test Cases
 test_cases = [
@@ -59,15 +58,16 @@ def test_convert_raw_messages_to_chat_messages(test_case):
 mock_history = [
     {"role": "system", "content": "You are an assistant for loan recommendations."},
     {"role": "user", "content": "I want to apply for a home loan."},
-    {"role": "assistant", "content": "Please provide key details including income, name and credit score ?"}
+    {"role": "assistant", "content": "Please provide more information?"},
 ]
 
 mock_history_1 = [
     {"role": "system", "content": "You are an assistant for loan recommendations."},
     {"role": "user", "content": "I want to apply for a home loan."},
-    {"role": "assistant", "content": "Please provide key details including income, name and credit score ?"},
-    {"role": "user", "content": "My name is mia, my annual income is abc, and my credit score is 700."},
-    {"role": "assistant", "content": "What is your annual income? Please provide it in numeric format."},
+    {"role": "assistant", "content": "Please provide key details ?"},
+    {"role": "user", "content":"My name is John, my annual income is 80,000 and my loan amount is 250,000 in 360 months as loan term, "
+                               "my property value is 300,000"},
+    {"role": "assistant", "content": "What is the purpose of your loan? Please choose one: 'Home purchase', 'Refinance', 'Cash-out refinancing', 'Home improvement', or 'Other purpose'.."}
 ]
 
 mock_history_2 = [
@@ -82,42 +82,27 @@ test_cases = [
     # Case 1: User provides valid data
     {
         "history": mock_history,
-        "question": "My name is John, my annual income is 60000, and my credit score is 720.",
-        "expected": {"name": "John", "income": 60000, "credit_score": 720},
+        "question": "Hey, I’m John. I make 80000 a year, and I need take out a loan of 50,0000 for 360 months as loan term, my property value is 450000, and my purpose is Home purchase",
+        "expected": "Rejected",
     },
     # Case 2: User provides invalid income
     {
         "history": mock_history,
-        "question": "My name is mia, my annual income is abc, and my credit score is 700.",
+        "question": "My name is mia, my annual income is abc, and my loan amount is 250,000.",
         "expected": "What is your annual income? Please provide it in numeric format.",
-    },
-    # Case 3: User provides corrected income 
-    {
-        "history": mock_history_1,
-        "question": "ok, my annual income is 80000.",
-        "expected": {"name": "mia", "income": 80000, "credit_score": 700},
-    },
-    # Case 4: User provides valid income but not format numeric
-    {
-        "history": mock_history_1,
-        "question": "My name is Mia, I have a lot of dogs.",
-        "expected": "What is your annual income? Please provide it in numeric format.",
-    },
-    # Case 5: User provides valid income and need to provide another criteria
-    {
-        "history": mock_history_2,
-        "question": "my annual income is 50000",
-        "expected": "What is your credit score? Please provide it in numeric format.",
     }
 ]
 
-@pytest.mark.parametrize("test_case", test_cases)
-def test_bot_agent_home_loan_recommendation_handle(test_case, monkeypatch):
-    history = test_case["history"]
-    question = test_case["question"]
-    expected = test_case["expected"]
-    
-    # Execute the function
-    actual = bot_agent_home_loan_recommandation_handle(history, question)
+def test_bot_agent_home_loan_recommendation_handle():
 
-    assert actual == str(expected)
+    history  = test_cases[0]["history"]
+    question = test_cases[0]["question"]
+    expected = test_cases[0]["expected"]    
+    actual = bot_agent_home_loan_recommandation_handle(history, question)
+    assert actual == expected
+
+    history  = test_cases[1]["history"]
+    question = test_cases[1]["question"]
+    expected = test_cases[1]["expected"]
+    actual = bot_agent_home_loan_recommandation_handle(history, question)
+    assert actual == expected

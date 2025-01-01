@@ -1,7 +1,7 @@
 from src.celery_app import celery_app
 from celery.result import AsyncResult
-from src.task.calculation import add
-from src.task.routing import llm_handle_message
+from src.task.calculation_task import add
+from src.task.routing_task import llm_handle_message
 import time
 
 def test_celery_app_init():

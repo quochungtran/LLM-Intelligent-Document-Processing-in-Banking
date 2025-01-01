@@ -1,7 +1,8 @@
 import hashlib
 import logging.config
 import secrets
-
+import os
+import json
 
 def setup_logging():
     logging.config.dictConfig({
@@ -43,3 +44,23 @@ def generate_request_id(max_length=32):
     h = hashlib.sha256()
     h.update(random_string.encode('utf-8'))
     return h.hexdigest()[:max_length+1]
+
+def process_string_to_list(input_string):
+    return json.loads(input_string)
+
+def get_pattern(url):
+    """
+    Determines the type of resource based on the URL.
+    """
+    if url.endswith(".pdf") or "pdf" in url:
+        return "pdf"
+    elif url.startswith("http://") or url.startswith("https://"):
+        return "http"
+    elif os.path.isfile(url):
+        # Handles local file paths
+        if url.endswith(".pdf"):
+            return "pdf"
+        else:
+            return "unknown"
+    else:
+        return "unknown"
