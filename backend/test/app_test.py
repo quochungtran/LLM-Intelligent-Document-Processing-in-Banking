@@ -2,39 +2,41 @@ from fastapi.testclient import TestClient
 from src.app import app
 from src.app import CompleteRequest
 import json
+import unittest
 
 test_client = TestClient(app)
 
-def test_root():
-    """
-    Test the root endpoint to ensure the app is running.
-    """
-    response = test_client.get("/")
-    assert response.status_code == 200
-    assert response.json()[0] == "Welcome to Intelligent home loan processing"
+class TestApp(unittest.TestCase):
 
-def test_chat_complete_endpoint_sync():
-    """
-    Test the /chat/complete endpoint for synchronous requests.
-    """
-    payload = {
-        "bot_id": "best_homeloan_bot",
-        "user_id": "Hung",
-        "user_message": "Hello, I want to know if my home loan application is approved",
-        "sync_request": True
-    }
-    response = test_client.post("/chat/complete", json=payload)
+    def test_root(self):
+        """
+        Test the root endpoint to ensure the app is running.
+        """
+        response = test_client.get("/")
+        assert response.status_code == 200
+        assert response.json()[0] == "Welcome to Intelligent home loan processing"
 
-    # bot_answer = (
-    #     "To assist you with your home loan application, "
-    #     "I need to collect some information from you. Let's start with your name. "
-    #     "What is your name? Please provide it using alphabetic characters only."
-    # )
+    def test_chat_complete_endpoint_sync(self):
+        """
+        Test the /chat/complete endpoint for synchronous requests.
+        """
+        payload = {
+            "bot_id": "best_homeloan_bot",
+            "user_id": "Hung",
+            "user_message": "Which states have the highest home loan demand in 2024?",
+            "sync_request": True
+        }
+        response = test_client.post("/chat/complete", json=payload)
 
-    # expected = {'content': bot_answer, "role": 'assistant'}
-    
-    assert response.status_code == 200
-    assert len(response.json()["response"])  > 0
+        # bot_answer = (
+        #     "To assist you with your home loan application, "
+        #     "I need to collect some information from you. Let's start with your name. "
+        #     "What is your name? Please provide it using alphabetic characters only."
+        # )
+
+        # expected = {'content': bot_answer, "role": 'assistant'}
+        self.assertEqual(response.status_code, 200)
+        self.assertGreater(len(response.json()["response"]), 0)
 
 # def test_chat_complete_task_flow():
 #     """

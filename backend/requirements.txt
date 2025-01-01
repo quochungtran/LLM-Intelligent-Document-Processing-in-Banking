@@ -22,6 +22,7 @@ xgboost
 imblearn
 firecrawl-py==1.2.4
 llama-index-readers-web==0.2.3
+llama-index-readers-file==0.2.2
 # faiss-cpu>=1.8.0.post1
 # llama-index==0.11.15 # from 2/10
 # llama-index-embeddings-huggingface==0.3.1

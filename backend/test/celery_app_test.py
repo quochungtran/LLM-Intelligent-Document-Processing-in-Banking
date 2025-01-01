@@ -16,8 +16,8 @@ def test_task_discovery():
     tasks = celery_app.tasks.keys()
 
     # Check that tasks from all submodules are discovered
-    assert "src.task.calculation.add" in tasks
-    assert "src.task.calculation.multiply" in tasks
+    assert "src.task.calculation_task.add" in tasks
+    assert "src.task.calculation_task.multiply" in tasks
 
 def test_add_task():
     

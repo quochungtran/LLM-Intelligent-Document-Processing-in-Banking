@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def bot_route_answer_message(history, question):
     # detect the route
     route = detect_route(history, question)
-    if route == 'homeloan_faq':
+    if route == 'home_loan_faq':
         return bot_rag_home_loan_faq_answer_message(history, question)
     elif route == 'home_loan_recommandation':
         return bot_agent_home_loan_recommandation_answer_message(history, question)
