@@ -1,6 +1,7 @@
 from openai import OpenAI
 from redis import InvalidResponse
 import logging
+import json
 from config import Config
 
 
@@ -34,6 +35,21 @@ def gen_doc_prompt(docs):
 
     return "Document: \n + {}".format(doc_prompt)
 
+def summarize_home_loan_application(application_info, status):
+    user_prompt = f"""
+        You are an expert assistant specializing in financial topics, particularly home loans recommandation. 
+        Summarize the home loan application of a user given the content:
+        {json.dumps(application_info)} \n
+        and predicted status of this application {status}
+    """
+    openai_messages = [
+        {"role": "system", "content": "You are a highly intelligent assistant specializing in financial topics, specializing in home loan application recommandation"},
+        {"role": "user", "content": user_prompt}
+    ]
+    summarized_homeloan_app = openai_chat_complete(openai_messages)
+    logger.info(f"Home loan application summerize: {summarized_homeloan_app}")
+    return summarized_homeloan_app
+
 def summarize_doc_home_loan(doc_content):
     user_prompt = f"""
         You are an expert assistant specializing in financial topics, particularly home loans. 
@@ -52,7 +68,7 @@ def summarize_doc_home_loan(doc_content):
         {"role": "user", "content": user_prompt}
     ]
     summarized_txt = openai_chat_complete(openai_messages)
-    print("Home Loan Insights Summary: ", summarized_txt)
+    logger.info("Home Loan Insights Summary: ", summarized_txt)
     return summarized_txt
 
 def generate_conversation_text(conversations):

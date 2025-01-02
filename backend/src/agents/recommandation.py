@@ -1,6 +1,7 @@
 import logging
 import pandas as pd
 from llama_index.core.tools import FunctionTool
+from brain import summarize_home_loan_application
 from config import Config
 import joblib
 import os
@@ -108,7 +109,8 @@ def home_loan_recommandation(inputs: dict):
 
         # Make prediction
         prediction = model.predict(preprocess_data)
-        return "Approved" if prediction[0] == 0 else "Rejected"
+        status = "Approved" if prediction[0] == 0 else "Rejected"
+        return summarize_home_loan_application(inputs, status)
 
     except Exception as e:
         return f"An error occurred: {e}"
