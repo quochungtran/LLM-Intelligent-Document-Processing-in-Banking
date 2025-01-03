@@ -287,7 +287,7 @@ This service utilizes OpenAI agents for planning and integrates two specific too
     - If complete: The input contains all mandatory home loan information. The agent returns the payload with all the filled information required by the chatbot to the user.
     - If incomplete: The agent identifies missing values and requests the user to provide the necessary information.
 
-After receiving a complete payload for a home loan application, the service uses an XGBoost model trained on the HMDA dataset as a prediction engine to determine whether the home loan application is approved or rejected.
+After receiving a complete payload for a home loan application, the service uses an XGBoost model trained on the [HMDA dataset](https://ffiec.cfpb.gov/data-browser/data/2023?category=states) as a prediction engine to determine whether the home loan application is approved or rejected.
 
 The service summarizes the home loan application, including the status of the application (approved/rejected), and reports the result back to the user.
 
@@ -295,7 +295,7 @@ The service summarizes the home loan application, including the status of the ap
 (TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
 
-### Demo 
+# Demo 
 
 To explore the Intelligent Home Loan Processing API, visit http://localhost:8082/docs. This endpoint provides a comprehensive overview of the API's functionality, enabling you to test its capabilities effortlessly.
 
