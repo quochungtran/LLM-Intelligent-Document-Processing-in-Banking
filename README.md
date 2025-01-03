@@ -307,13 +307,6 @@ To navigate application logs, retrieved documents, and more, use the following c
 
 # TODOs
 
-- RAG for home loan faq                                                                        done
-- Evaluate home loan faq                                                                       done
-- Create summerize part to summerize home loan application before recommand (polish the agent) done
-- Intergrate eval homeloan golden dataset in unit test (1h30)                                  done
-- Write doc   (1d)                                                                             done
-
-
 TODO capture of chatbot interface in document
 
 Refactoring code
