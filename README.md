@@ -1,18 +1,231 @@
 Intelligence 
+# LLM chat bot - intelligent document processing for home loan applications 
+In this project, I leverage the LLM power to create a chat bot, two services is deployed so far in ly application:
+- FAQ home loan question for different user concerning topic such as market trends, eligibility, etc
+- Automate document processing tasks for home loan documents,summarize and identify missing key info and recommand for approval
 
-# Create python virtual enviroment
 
+# Table of content
+
+<!--ts-->
+   * [Overal architecture](#overal-architecture)
+   * [Project structure](#project-structure)
+   * [Getting started](#getting-started)
+      * [Prepare enviroment](#prepare-enviroment)
+   * [On-premise deployment](#on-premise-deployment)
+      * [Running application docker container in local](#running-application-docker-container-in-local)
+      * [API local testing](#api-local-testing)
+   * [Demo](#demo)
+<!--te-->
+
+         
+# Overal architecture
+
+![homeloan_chatbot_architect](images/homeloan_chatbot_architect.png)
+
+# Project structure
+
+# Getting started
+
+To get starte with this project, we need to do the following
+
+## Prepare enviroment 
+Install all dependencies dedicated to the project in local
+
+```bash
 python -m venv .venv
-
 source .venv/bin/activate
-
-deactivate
-
-# Install dependencies
-
 pip install -r backend/requirements.txt
-pip install -r backend/requirements_vector_db.txt
+pip install -r maria_db/requirements.txt
+pip install -r chatbot-ui/requirements.txt
+```
+Start application on docker package.
+```bash
+bash backend/run.sh 
+bash chatbot-ui/run.sh
+bash maria_db/run.sh
+```
 
-# Set up chatbot project
-docker network create internal-network
+## Running application docker container in local 
 
+Navigating FastAPI deployement using `http://localhost:8082/docs` on host machine
+
+Navigating chat bot interface using  `http://localhost:8051/` on host machine
+
+# Application services 
+
+## RAG home loan FAQ 
+### Introduction 
+
+This service is designed to address user's frequently asked questions (FAQs) related to home loans.
+This service covers a range of key topics that users are most concerned about, including:
+
+- Eligibility: Understanding the requirements to qualify for a home loan.
+- Market Trends: Insights into current market conditions and their impact on home loans.
+- Refinancing: Guidance on how to refinance an existing home loan.
+- Interest Rates: Information on current interest rates and how they affect loan repayments.
+- To be added when needed
+
+### System overview
+
+![rag_system](images/rag_system.png)
+
+### Buiding home loan base knowledge 
+
+The data sources for the service are categorized as follows (to be added):
+| **Category**         | **Source**                                                                                                     |
+|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| **Interest Rate**     | [CNET: Mortgage Rate Predictions](https://www.cnet.com/personal-finance/mortgage-rate-predictions-holiday-week-brings-higher-rates/) |
+|                       | [Yahoo Finance: Countries with Highest Mortgage Rates](https://finance.yahoo.com/news/15-countries-highest-mortgage-rates-210146206.html) |
+| **Market Trends**     | [LinkedIn: 2024 Mortgage Market Review](https://www.linkedin.com/pulse/2024-mortgage-market-review-key-insights-trends-shaped-year-kexwe/) |
+|                       | [The Mortgage Reports: Housing Market Recap](https://themortgagereports.com/116167/2024-housing-market-recap) |
+|                       | [Bankrate: Housing Trends](https://www.bankrate.com/real-estate/housing-trends/)                              |
+|                       | [Freddie Mac: Economic Forecast](https://www.freddiemac.com/research/forecast/20241126-us-economy-remains-resilient-with-strong-q3-growth#spotlight) |
+|                       | Local PDF: `data/pdf/cfpb_2023-mortgage-market-activity-and-trends_2024-12.pdf` |
+| **Eligibility**       | [HDFC: Eligibility Calculator](https://www.hdfc.com/home-loan-eligibility-calculator)                        |
+|                       | [ICICI Bank: Eligibility Calculator](https://www.icicibank.com/calculator/home-loan-eligibility-calculator#:~:text=When%20applying%20for%20a%20home%20loan%2C%20your%20salary%20is%20crucial,your%20Home%20Loan%20journey%20effectively.) |
+|                       | [HDFC Blog: Understanding Eligibility](https://www.hdfc.com/blog/home-finance/understanding-home-loan-eligibility#:~:text=1.,Your%20overall%20personal%20profile%20viz.) |
+| **Financial Choice**  | [Agrim HFC: Loan Balance Transfer](https://agrimhfc.com/home-loan-balance-transfer-or-top-up-loan/)           |
+|                       | [Agrim HFC: Loans for Under Construction Property](https://agrimhfc.com/home-loan-under-construction-property-benefits/) |
+| **Refinancing**       | [Athena: Refinancing Requirements](https://www.athena.com.au/learn/requirements-for-home-loan-refinancing)   |
+|                       | [Investopedia: Refinancing Pros and Cons](https://www.investopedia.com/mortgage/refinance/when-and-when-not-to-refinance-mortgage/#:~:text=Since%20refinancing%20can%20cost%20between,when%20it's%20better%20to%20wait.) |
+
+
+The Data ingestion focuses on processing data in two primary formats:
+- **Web URLs**: Extracting and categorizing relevant information from various online sources.
+- **PDF Documents**: Parsing and indexing local PDF files for inclusion in the knowledge base.
+
+The processed data is chunked( into `Node` object represents a "chunk" of a source Document, whether that is a text chunk, an image, or other. similar to Documents) and uploaded to a Qdrant vector database, enabling efficient and accurate retrieval for query answering.
+
+### RAG flow answering
+The service leverages a Routing and Generation (RAG) approach to accurately answer user queries. Here’s a breakdown of the process:
+
+**Routing user's intent**: The `user's intent` will be analysed based on chat history and the current message and then a routing mechanism determines the `user's intent` and maps it to the appropriate topic, corresponding to the collection name in the Qdrant vector database for retrieval. The routing process utilizes a custom prompt designed for the LLM model `gpt-4o-mini` using `Role prompting` and `few-shot prompting`, to set up the examples. 
+
+**Embedding user's intent**: The `user's intent` is embedded using the text-embedding-3-small model, which supports a maximum token limit of 8,192.
+
+**Retrieving Relevant Documents:**: The embedded user intent is matched against vectors in the Qdrant database to find similar documents, corresponding the collection name from routing approaching above. 
+
+**Generating the Final Answer**: The LLM combines the retrieved documents with the user's query and chat history to generate a comprehensive, context-aware response.
+
+### Evaluate 
+
+The evaluation metrics currently in use are:
+
+- **Faithfulness**: Determines whether the answer accurately reflects the retrieved information.
+- **Context Relevancy**:Measures how relevant the retrieved context and resulting answer are to the original query.
+
+A golden dataset has been generated to evaluate RAG performance using several home loan FAQs from the topics mentioned earlier. The dataset can be referenced in `backend/test/rag/golden_data.py`:
+
+```bash
+"collections": [
+        {
+            "category": "interest_rate",
+            "questions": [
+                "What are the current interest rates for home loans in 2024?",
+                "How have home loan interest rates changed over the past year?",
+                "What factors influence home loan interest rates?",
+                ...
+            ]
+        },
+        {
+            "category": "eligibility",
+            "questions": [
+                "What is the minimum credit score needed to qualify for a home loan?",
+                "What documents are required to apply for a home loan?",
+                "How does my debt-to-income ratio affect my loan eligibility?",
+                ...
+            ]
+        },
+        {
+            "category": "market_trends",
+            "questions": [
+                "Which states have the highest home loan demand in 2024?",
+                "How do home loan rates differ in urban vs. rural areas?",
+                "What are the top regions for refinancing activity in 2023?",
+                "How does the housing market impact home loan trends in California?",
+                ...
+            ]
+        },
+        {
+            "category": "refinancing_policy",
+            "questions": [
+                "What are the current trends in home loan refinancing?",
+                "How does a drop in interest rates affect refinancing activity?",
+                ...
+            ]
+        }
+    ]
+}
+```
+
+**Current Performance**
+
+- Faithfulness Score: 60%
+- Context Relevancy Score: 65%
+
+Further optimization is needed to improve these metrics for better alignment and contextual accuracy in responses.
+### Futher Improvement
+- Expanding/adjust the knowledge base with more diverse data sources.
+- Fine-tuning the embedding and retrieval models for better accuracy.
+
+### Example
+(TODO: Provide an example of the service in action, including input, processing steps, and final output)
+
+
+## Personnal home loan recommandation
+### Introduction 
+The service aims to predict and assess a home loan application, identify key missing values in the user's home loan application, and provide/summerize a final recommendation on whether the application is approved or rejected.
+
+### System overview
+![homeloan_recommandation](images/homeloan_recommandation.png)
+### Methodologies
+This service utilizes OpenAI agents for planning and integrates two specific tools:
+
+- `gather_homeloan_info_application`: This tool collects the user's home loan application information based on the following mandatory fields from chat history:
+
+```bash
+{
+    "name":           "Numeric or null",
+    "income":         "numeric or null",
+    "loan_amount":    "numeric or null",
+    "property_value": "numeric or null",
+    "loan_term":      "numeric or null",
+    "loan_purpose":  ["Home purchase', 'Refinance', 'Cash-out refinancing', 'Home improvement', or 'Other purpose'. or null"]
+}
+```
+- `detecting_missing_values`:This tool takes the generated home loan parameters as input to detect and validate missing key values:
+    - If complete: The input contains all mandatory home loan information. The agent returns the payload with all the filled information required by the chatbot to the user.
+    - If incomplete: The agent identifies missing values and requests the user to provide the necessary information.
+
+After receiving a complete payload for a home loan application, the service uses an XGBoost model trained on the HMDA dataset as a prediction engine to determine whether the home loan application is approved or rejected.
+
+The service summarizes the home loan application, including the status of the application (approved/rejected), and reports the result back to the user.
+
+### Example
+(TODO: Provide an example of the service in action, including input, processing steps, and final output)
+
+
+### Demo 
+
+To explore the Intelligent Home Loan Processing API, visit http://localhost:8082/docs. This endpoint provides a comprehensive overview of the API's functionality, enabling you to test its capabilities effortlessly.
+
+To interact with the chatbot application, access http://localhost:8051/ on the host machine.
+
+To navigate application logs, retrieved documents, and more, use the following command:
+
+
+
+# TODOs
+
+RAG for home loan faq                                                                        done
+Evaluate home loan faq                                                                       done
+create summerize part to summerize home loan application before recommand (polish the agent) done
+Intergrate eval homeloan golden dataset in unit test (1h30)                                  done
+Write doc   (1d)                                                                             done
+
+
+TODO capture of chatbot interface in document
+refactoring code
+finetune/Deploy improve 
+Minor: unit test (connection db)
