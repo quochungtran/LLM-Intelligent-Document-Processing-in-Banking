@@ -128,7 +128,7 @@ pip install -r backend/requirements.txt
 pip install -r maria_db/requirements.txt
 pip install -r chatbot-ui/requirements.txt
 ```
-Start application on docker package.
+Start application on docker container.
 ```bash
 bash backend/run.sh 
 bash chatbot-ui/run.sh
