@@ -189,13 +189,13 @@ The processed data is chunked( into `Node` object represents a "chunk" of a sour
 ### RAG flow answering
 The service leverages a Routing and Generation (RAG) approach to accurately answer user queries. Here’s a breakdown of the process:
 
-**Routing user's intent**: The `user's intent` will be analysed based on chat history and the current message and then a routing mechanism determines the `user's intent` and maps it to the appropriate topic, corresponding to the collection name in the Qdrant vector database for retrieval. The routing process utilizes a custom prompt designed for the LLM model `gpt-4o-mini` using `Role prompting` and `few-shot prompting`, to set up the examples. 
+- **Routing user's intent**: The `user's intent` will be analysed based on chat history and the current message and then a routing mechanism determines the `user's intent` and maps it to the appropriate topic (reference on 5 topics mentionning above) , corresponding to the collection name in the Qdrant vector database for retrieval. The routing process utilizes a custom prompt designed for the LLM model `gpt-4o-mini` using `Role prompting` and `few-shot prompting`, to set up the examples. 
 
-**Embedding user's intent**: The `user's intent` is embedded using the text-embedding-3-small model, which supports a maximum token limit of 8,192.
+- **Embedding user's intent**: The `user's intent` is embedded using the text-embedding-3-small model, which supports a maximum token limit of 8,192.
 
-**Retrieving Relevant Documents:**: The embedded user intent is matched against vectors in the Qdrant database to find similar documents, corresponding the collection name from routing approaching above. 
+- **Retrieving Relevant Documents:**: The embedded user intent is matched against vectors in the Qdrant database to find similar documents, corresponding the collection name from routing approaching above. 
 
-**Generating the Final Answer**: The LLM combines the retrieved documents with the user's query and chat history to generate a comprehensive, context-aware response.
+- **Generating the Final Answer**: The LLM combines the retrieved documents with the user's query and chat history to generate a comprehensive, context-aware response.
 
 ### Evaluate 
 
