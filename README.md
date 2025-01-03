@@ -12,9 +12,21 @@ In this project, I leverage the LLM power to create a chat bot, two services is 
    * [Project structure](#project-structure)
    * [Getting started](#getting-started)
       * [Prepare enviroment](#prepare-enviroment)
-   * [On-premise deployment](#on-premise-deployment)
       * [Running application docker container in local](#running-application-docker-container-in-local)
-      * [API local testing](#api-local-testing)
+   * [Application services](#application-services)
+      * [RAG (Retrieval-Augmented Generation) home loan FAQ](#rag-retrieval-augmented-generation-home-loan-faq)
+        * [Introduction](#introduction)
+        * [System overview](#system-overview)
+        * [Buiding home loan base knowledge](#buiding-home-loan-base-knowledge)
+        * [RAG flow answering](#rag-flow-answering)
+        * [Evaluate](#evaluate)
+        * [Further improvement](#further-improvement)
+        * [Example](#example)
+      * [Personnal home loan recommandation](personnal-home-loan-recommandation)
+        * [Introduction](#personnal-home-loan-recommandation)
+        * [System overview](#system-overview)
+        * [Methodologies](#eethodologies)
+        * [Example](#example)    
    * [Demo](#demo)
 <!--te-->
 
@@ -24,7 +36,84 @@ In this project, I leverage the LLM power to create a chat bot, two services is 
 ![homeloan_chatbot_architect](images/homeloan_chatbot_architect.png)
 
 # Project structure
-
+```bash
+├── backend                                     # Backend application module
+│   ├── docker_clean_up.sh                      # Bash script to clean up application Docker resources  
+│   ├── docker-compose.yaml                     # Backend deployment Docker configuration  
+│   ├── Dockerfile                              # Docker image configuration for the backend application
+│   ├── requirements_sql_db.txt                 # SQL chat history database requirements for the backend
+│   ├── requirements.txt                        # backend dependencies for the backend
+│   ├── run.sh                                  # Script to start the backend application on docker 
+│   ├── src                                     # Source code for the backend
+│   │   ├── agents                              # Agent logic for home loan application processing and predictions
+│   │   │   ├── agents.py                       # Core logic for agent-based processing
+│   │   │   ├── model                           
+│   │   │   │   └── xgboost_model.joblib        # Pre-trained XGBoost model for home loan prediction
+│   │   │   ├── recommandation.py               # Logic for generating loan recommendations
+│   │   │   └── tools.py                        # Tools for agent operations
+│   │   ├── app.py                              # Entry point for the Fast API backend application
+│   │   ├── brain.py                            # Logic for intelligent decision-making using OpenAI client
+│   │   ├── cache.py                            # Cache implementation for the application
+│   │   ├── celery_app.py                       # Celery task queue configuration
+│   │   ├── config.py                           # Configuration file for the backend
+│   │   ├── database.py                         # Database connection logic
+│   │   ├── models.py                           # Database models
+│   │   ├── rag                                 # Directory for RAG (Retrieve and Generate) flow
+│   │   │   ├── document.py                     # Document handling for RAG flow
+│   │   │   ├── rag_flow.py                     # Core logic for RAG-based processing
+│   │   │   └── vectordb.py                     # Vector database integration
+│   │   ├── schemas.py                          # Data schemas for API endpoints
+│   │   ├── task                                # Celery task logic
+│   │   │   ├── agent_task.py                   # Tasks related to agent processing
+│   │   │   ├── calculation_task.py             # Tasks for calculations
+│   │   │   ├── rag_task.py                     # Tasks for RAG operations
+│   │   │   └── routing_task.py                 # Tasks for query routing
+│   │   └── utils.py                            # Utility functions for the backend
+│   └── test                                    # Test cases for the backend
+│       ├── agents                              
+│       │   ├── agents_test.py                  
+│       ├── app_test.py                         
+│       ├── brain_test.py                       
+│       ├── cache_test.py                       
+│       ├── celery_app_test.py                  
+│       ├── chat_history_db_test.py             
+│       ├── rag                                 
+│       │   ├── golden_data.py                  
+│       │   ├── test_rag_performance.py         
+│       │   └── vectordb_test.py                
+│       └── utils_test.py                       
+├── chatbot-ui                                 # Frontend chatbot application
+│   ├── chat_interface.py                       # Chatbot interface logic
+│   ├── config.toml                             # Configuration file for chatbot
+│   ├── docker-compose.yml                      # Docker configuration for chatbot deployment
+│   ├── Dockerfile                              # Docker image configuration for chatbot
+│   ├── entrypoint.sh                           # Entrypoint script for chatbot Docker container
+│   ├── requirements.txt                        # Python dependencies for chatbot
+│   ├── run.sh                                  # Script to start the chatbot application on docker container
+│   └── test_chatbot_interface.py               # Unit tests for chatbot interface
+├── data                                       # Directory for data assets
+│   ├── csv                                     # CSV data files
+│   │   ├── loan_approval_dataset.csv           # Dataset for loan approval analysis
+│   │   ├── state_NY-CA.csv                     # State-specific data for NY and CA
+│   │   └── state_WA.csv                        # State-specific data for WA
+│   ├── loan-prediction-eda.ipynb               # Exploratory data analysis notebook
+│   └── pdf                                     # PDF data source
+│       ├── bcfp_hmda_2017-mortgage-market-activity-trends_report.pdf # 2017  hmda market trends report
+│       └── cfpb_2023-mortgage-market-activity-and-trends_2024-12.pdf # 2023  hmda market trends report
+├── images                                     # Directory for storing image assets
+├── maria_db                                   # MariaDB configuration and scripts
+│   ├── docker-compose.yaml                     # Docker configuration for MariaDB deployment
+│   ├── init.sql                                # SQL initialization script
+│   ├── README.md                               # Documentation for MariaDB module
+│   ├── requirements.txt                        # MariaDB dependencies
+│   └── run.sh                                  # Script to run MariaDB
+├── notebooks                                  # Jupyter notebooks for data analysis and experimentation
+│   ├── chunking_kaggle_data_analyst.ipynb      # Notebook for chunking Kaggle data
+│   ├── hmda_data_analyst.ipynb                 # Notebook for HMDA data analysis
+│   ├── home_loan_faq_rag.ipynb                 # Notebook for RAG implementation on home loan FAQs
+│   └── requirements.txt                        # Dependencies for notebooks
+└── README.md                                  # Project documentation
+```
 # Getting started
 
 To get starte with this project, we need to do the following
@@ -54,7 +143,7 @@ Navigating chat bot interface using  `http://localhost:8051/` on host machine
 
 # Application services 
 
-## RAG home loan FAQ 
+## RAG (Retrieval-Augmented Generation) home loan FAQ 
 ### Introduction 
 
 This service is designed to address user's frequently asked questions (FAQs) related to home loans.
@@ -218,14 +307,17 @@ To navigate application logs, retrieved documents, and more, use the following c
 
 # TODOs
 
-RAG for home loan faq                                                                        done
-Evaluate home loan faq                                                                       done
-create summerize part to summerize home loan application before recommand (polish the agent) done
-Intergrate eval homeloan golden dataset in unit test (1h30)                                  done
-Write doc   (1d)                                                                             done
+- RAG for home loan faq                                                                        done
+- Evaluate home loan faq                                                                       done
+- Create summerize part to summerize home loan application before recommand (polish the agent) done
+- Intergrate eval homeloan golden dataset in unit test (1h30)                                  done
+- Write doc   (1d)                                                                             done
 
 
 TODO capture of chatbot interface in document
-refactoring code
-finetune/Deploy improve 
+
+Refactoring code
+
+Finetune/Deploy improve 
+
 Minor: unit test (connection db)
