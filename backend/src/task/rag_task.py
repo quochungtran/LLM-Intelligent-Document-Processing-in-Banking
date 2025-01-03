@@ -8,4 +8,4 @@ logger = logging.getLogger(__name__)
 
 @shared_task() 
 def bot_rag_home_loan_faq_answer_message(history, message):
-    return bot_rag_answer_message(history, message)
+    return bot_rag_answer_message(history, message)[0]

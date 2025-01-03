@@ -75,10 +75,11 @@ def bot_rag_answer_message(history, message):
     # Use history as openai messages
     openai_messages = copy(history)
 
+    gen_doc = gen_doc_prompt(top_docs)
     # Update documents to prompt
     openai_messages.extend(
         [
-            {"role": "user", "content": gen_doc_prompt(top_docs)},
+            {"role": "user", "content": gen_doc},
             {"role": "user", "content": message},
         ]
     )
@@ -88,4 +89,4 @@ def bot_rag_answer_message(history, message):
     assistant_answer = openai_chat_complete(openai_messages)
 
     logger.info(f"Bot RAG reply: {assistant_answer}")
-    return assistant_answer
+    return assistant_answer, gen_doc
