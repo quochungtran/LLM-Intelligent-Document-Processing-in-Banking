@@ -18,23 +18,33 @@ formatted_valid_field = {"name": "Hung",
                          "loan_term": 360.0,
                          "loan_purpose": "Home purchase"
                         }
+
+field_requirements_samples = {
+    "name":   "alphabetic or null",
+    "income": "numeric or null",
+    "loan_amount": "numeric or null",
+    "property_value": "numeric or null",
+    "loan_term": "numeric or null",
+    "loan_purpose":  "choose one in the list ['Home purchase', 'Refinance', "
+        "'Cash-out refinancing', 'Home improvement', or 'Other purpose'].",
+}
+
 formatted_requirements = "\n".join([f"- `{field}`: {rule}" for field, rule in field_requirements.items()])
 
 agent_prompt = f"""
-You are an assistant specializing in home loan applications. home loan application containing the mandatory fields, \n
+You are an assistant specializing in home loan applications containing the mandatory fields, \n
 {formatted_requirements}. \n
 Your goal is to assist users by collecting missing or invalid information from this  mandatory fields and validating the required fields. 
 {field_requirements.keys}
 
-Action input should be:
-{json.dumps(field_requirements)}
-
 Steps:
-1. Validate the user's input for these fields:
+1. Given the following the user's latest message and chat history, detecting and gathering all information (valid or missing)
+    of a home loan application and assign to the json output following the format:
+    {json.dumps(field_requirements_samples)}
+
+2. Validate the user's input for these fields:
    - If a field is missing or invalid, immediately return the corresponding question for that field.
    - For example: If `income` is invalid or missing, return: "What is your annual income? Please provide it in numeric format."
-
-2. Continue collecting and validating fields one at a time until all mandatory fields are valid.
 
 3. Once all fields are valid, return the data in the following JSON format as **final output** of detect_invalid_or_missing_fields tool, as shown in the example:
 {json.dumps(formatted_valid_field)}
@@ -107,7 +117,7 @@ test_cases = [
     # Case 1: User provides valid data
     {
         "history": mock_history,
-        "question": "I’m John, and I earn 80000 annually. I need 500000 for a Home purchase. My property is valued at 450000.",
+        "question": "I’m John, and I earn 80000 annually. I need 500000, I don't have purpose. My property is valued at 450000. and I need a loan for 360 months. the purpose is home purchase",
     },
 ]
 print(json.dumps(field_requirements))
