@@ -12,6 +12,21 @@ from src.models import (
     db
 )
 
+from src.database import SQLALCHEMY_DATABASE_URL
+
+# Create engine and session
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+# Test the connection
+def test_connection():
+    try:
+        with engine.connect() as connection:
+            result = connection.execute("SELECT 1")
+            print("Database connection is successful:", result.fetchone())
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+
+
 def test_load_conversation():
     """
     Test loading a conversation by conversation_id.
