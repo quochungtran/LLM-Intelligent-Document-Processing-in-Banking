@@ -33,7 +33,7 @@ class TestOpenAIBrain(unittest.TestCase):
     def test_detect_collection(self):
         message = "Which states have the highest home loan demand in 2024?"
         result = detect_collection(self.history, message)
-        self.assertIn('market_trends_collection', result)
+        self.assertIn('market_trends', result)
 
     def test_detect_route(self):
         route_message = "Can you explain about home loan approval?"

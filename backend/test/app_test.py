@@ -27,35 +27,5 @@ class TestApp(unittest.TestCase):
             "sync_request": True
         }
         response = test_client.post("/chat/complete", json=payload)
-
-        # bot_answer = (
-        #     "To assist you with your home loan application, "
-        #     "I need to collect some information from you. Let's start with your name. "
-        #     "What is your name? Please provide it using alphabetic characters only."
-        # )
-
-        # expected = {'content': bot_answer, "role": 'assistant'}
         self.assertEqual(response.status_code, 200)
         self.assertGreater(len(response.json()["response"]), 0)
-
-# def test_chat_complete_task_flow():
-#     """
-#     Test the full task lifecycle:
-#     - Create a task
-#     - Poll its status
-#     - Verify the final result
-#     """
-#     payload = {
-#         "bot_id": "best_homeloan_bot",
-#         "user_id": "Hung",
-#         "user_message": "Hello, I want to know if my home loan application is approved",
-#         "sync_request": False
-#     }
-
-#     response = test_client.post("/chat/complete", json=payload)
-#     assert response.status_code == 200
-
-#     # post_data = response.json()
-#     # task_id = post_data["task_id"]
-
-#     # assert len(task_id) > 0

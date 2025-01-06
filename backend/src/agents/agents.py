@@ -114,7 +114,6 @@ mock_history = [
 ]
 
 test_cases = [
-    # Case 1: User provides valid data
     {
         "history": mock_history,
         "question": "I’m John, and I earn 80000 annually. I need 500000, I don't have purpose. My property is valued at 450000. and I need a loan for 360 months. the purpose is home purchase",

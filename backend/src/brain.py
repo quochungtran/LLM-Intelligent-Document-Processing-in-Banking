@@ -53,7 +53,7 @@ def summarize_home_loan_application(application_info, status):
 def summarize_doc_home_loan(doc_content):
     user_prompt = f"""
         You are an expert assistant specializing in financial topics, particularly home loans. 
-        Summarize the text content below, ensuring it includes all relevant information about home loans, such as statistical data, key figures, and actionable insights. 
+        Summarize the text content below, ensuring it includes all relevant and important information about the text. 
 
         Ensure the summary is:
         - Concise, avoiding unnecessary repetition.
@@ -103,7 +103,7 @@ def detect_user_intent(history, message):
     # call openai
     return openai_chat_complete(openai_messages)
 
-vectordb_collections = ['interest_rate', 'market_trends_collection', 'eligibility', 'financial_choice', 'refinancing']
+vectordb_collections = ['interest_rate', 'market_trends', 'eligibility', 'financial_choice', 'refinancing']
 
 def detect_collection(history, message):
     history_messages = generate_conversation_text(history)
@@ -118,10 +118,10 @@ def detect_collection(history, message):
     Latest User Message:
     {message}
 
-    Classification (choose one or more related topic amongs "interest_rate", "market_trends_collection", "eligibility", "financial_choice", "refinancing"):
+    Classification (choose one or more related topic amongs "interest_rate", "market_trends", "eligibility", "financial_choice", "refinancing"):
     Always return a list of topic, fox example:
 
-    ["interest_rate","market_trends_collection"]
+    ["interest_rate","market_trends"]
     """
     openai_messages = [
         {"role": "system", "content": "You are a highly intelligent assistant that helps classify customer queries"},

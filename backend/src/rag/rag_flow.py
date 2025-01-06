@@ -8,16 +8,17 @@ from src.utils import setup_logging
 from src.rag.vectordb import qdrant_client
 from src.brain import detect_collection, get_embedding, detect_user_intent, openai_chat_complete, gen_doc_prompt
 from src.utils import process_string_to_list, get_pattern
-
+from src.rag.data_source import DATA_URL
+from src.rag.vectordb import qdrant_client
 import os
 import logging
+import time
 from copy import copy
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def load_url_data(url):
-    document_loader = None
+def getDocumentProcessing(url):
     if get_pattern(url) == "pdf":
         reader = PDFReader()
         parser = SentenceSplitter(
@@ -25,17 +26,19 @@ def load_url_data(url):
             chunk_size=1000,
             chunk_overlap=200,
         )
-        document_loader = DocumentLoader(reader, parser)
+        return DocumentLoader(url, reader, parser)
     elif get_pattern(url) == "http":
         FIRE_CRAWL_API_KEY = os.environ.get("FIRE_CRAWL_API_KEY", default=None)
         reader = FireCrawlWebReader(
             api_key=FIRE_CRAWL_API_KEY,
-            mode="crawl"
+            mode="scrape"
         )
         parser = MarkdownNodeParser()
-        document_loader = DocumentLoader(reader, parser)
+        return DocumentLoader(url, reader, parser)
 
-    return document_loader.to_summerized_home_loan_nodes(threshold=5000)
+def load_url_data(url):
+    document_loader = getDocumentProcessing(url)
+    return document_loader.to_summerized_home_loan_nodes(url, threshold=5000)
 
 def add_doc_to_vector_db(node_instance, collection_name="llm"):
     if node_instance.get_content():
@@ -90,3 +93,26 @@ def bot_rag_answer_message(history, message):
 
     logger.info(f"Bot RAG reply: {assistant_answer}")
     return assistant_answer, gen_doc
+
+def rag_flow_implementation(collection_name, urls):
+    doc_objects = []
+    print(f"Collection: {collection_name}")
+    qdrant_client.create_collection(collection_name)
+
+    for url in urls:
+        doc_objects += load_url_data(url)
+    
+    time.sleep(25)
+
+    for doc in doc_objects:
+        add_doc_to_vector_db(doc, collection_name)
+    
+topics = ["market_trends", "interest_rate", "eligibility", "financial_choice", "refinancing"]
+def tear_down():
+    for topic in topics:
+        qdrant_client.get_client().delete_collection(topics)
+
+if __name__=="__main__":
+    # tear_down()
+    for topic in topics:
+        docs = rag_flow_implementation(topic, DATA_URL[topic])

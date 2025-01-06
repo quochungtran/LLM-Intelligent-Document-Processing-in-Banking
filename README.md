@@ -205,6 +205,7 @@ The evaluation metrics currently in use are:
 - **Context Relevancy**:Measures how relevant the retrieved context and resulting answer are to the original query.
 
 A golden dataset has been generated to evaluate RAG performance using several home loan FAQs from the topics mentioned earlier. The dataset can be referenced in `backend/test/rag/golden_data.py`:
+Including 148 questions.
 
 ```bash
 "collections": [

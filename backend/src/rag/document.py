@@ -9,26 +9,19 @@ class DocumentLoader():
     def __init__(self, url, reader, parser):
         self._reader = reader
         self._parser = parser
-        self._url = url
-        self._documents = self.to_doc_objects()
-        self._nodes     = self.to_node_objects()
         
-    def to_doc_objects(self):
-        self._reader.load_data(self._url)
+    def to_doc_objects(self, url):
+        return self._reader.load_data(url)
     
-    def to_node_objects(self):
-        self._parser.get_nodes_from_documents(self._documents)
+    def to_node_objects(self, url):
+        document_obj = self.to_doc_objects(url)
+        return self._parser.get_nodes_from_documents(document_obj)
     
-    def to_summerized_home_loan_nodes(self, threshold=5000):
-        for node in self._nodes:
+    def to_summerized_home_loan_nodes(self, url, threshold=5000):
+        nodes_obj = self.to_node_objects(url)
+        for node in nodes_obj:
             doc_content = node.get_content()
             if(len(doc_content) >= threshold):
                 node.set_content(summarize_doc_home_loan(doc_content))
-
-    def get_nodes(self):
-        return self._nodes
-
-    def nodesLogging(self):
-        for i, node in enumerate(self._nodes):
-            print(f"""Doc Content     :{node.get_content()}""")
-            print("===================================================")
+        
+        return nodes_obj
