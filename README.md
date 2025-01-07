@@ -272,7 +272,7 @@ The service aims to predict and assess a home loan application, identify key mis
 ### Methodologies
 This service utilizes OpenAI agents for planning and integrates two specific tools:
 
-- `gather_homeloan_info_application`: This tool collects the user's home loan application information based on the following mandatory fields from chat history:
+-  Proposing agent prompt to collect the user's home loan application information based on the following mandatory fields from chat history:
 
 ```bash
 {
@@ -292,6 +292,51 @@ After receiving a complete payload for a home loan application, the service uses
 
 The service summarizes the home loan application, including the status of the application (approved/rejected), and reports the result back to the user.
 
+The downside is that it depends on too much the agent prompt where need to be polish and planning carefully to adapt with multiple 
+scenarios.
+
+### Fine-tuning
+
+Fine-Tuning for JSON-Formatted Outputs in Home Loan Applications
+
+This demonstrates fine-tuning a language model to generate consistent, JSON-formatted outputs for home loan applications. By leveraging user inputs and chat history, the model ensures the collection and validation of mandatory fields required for the application.
+
+Notebook Link
+The process for fine-tuning is detailed in `notebooks/finetune.ipynb`.
+
+**Training Data Samples** 
+Base model : `gpt-4o-mini-2024-07-18`
+
+Fine-tunning job : https://platform.openai.com/finetune/ftjob-ETvCNKRQL9sFw9z2eoOYLrsN?filter=all
+
+```bash
+{"messages": [{"role": "system", "content": "Given the mandatory fields: \"name\", \"income\", \"loan_amount\", \"property_value\", \"loan_term\", and \"loan_purpose\", validate and collect missing or invalid fields. Return a JSON object with the completed fields."}, 
+{"role": "user", "content": "Hi, I'm John, and I earn 80000 annually. I want a loan of 250000 for my new home."}, 
+{"role": "assistant", "content": "{\"name\": \"John\", \"income\": 80000, \"loan_amount\": 250000, \"property_value\": null, \"loan_term\": null, \"loan_purpose\": \"Home purchase\"}"}]}
+
+
+{"messages": [{"role": "system", "content": "Given the mandatory fields: \"name\", \"income\", \"loan_amount\", \"property_value\", \"loan_term\", and \"loan_purpose\", validate and collect missing or invalid fields. Return a JSON object with the completed fields."}, 
+{"role": "user", "content": "I\u2019m Sarah, and I need a loan for 150000. My property is valued at 500000. The loan term will be 30 years, and it\u2019s for home improvement."}, 
+{"role": "assistant", "content": "{\"name\": \"Sarah\", \"income\": null, \"loan_amount\": 150000, \"property_value\": 500000, \"loan_term\": 360, \"loan_purpose\": \"Home improvement\"}"}]}
+
+{"messages": [{"role": "system", "content": "Given the mandatory fields: \"name\", \"income\", \"loan_amount\", \"property_value\", \"loan_term\", and \"loan_purpose\", validate and collect missing or invalid fields. Return a JSON object with the completed fields."}, 
+{"role": "user", "content": "I\u2019m Sarah, and I need a loan for \u00e8\u00e9. My property is valued at 500000. The loan term will be 30 years, and it\u2019s for home improvement."}, 
+{"role": "assistant", "content": "{\"name\": \"Sarah\", \"income\": null, \"loan_amount\": null, \"property_value\": 500000, \"loan_term\": 360, \"loan_purpose\": \"Home improvement\"}"}]}
+
+....
+```
+**Performance Improvements**
+
+- Accuracy: Test cases show a 95% success rate across 24 diverse scenarios.
+- Consistency: Fine-tuned responses maintain a predictable and structured JSON format.
+- Efficiency: The model demonstrates reduced latency and improved prompt simplicity when compared to more complex prompts and larger models (e.g., `gpt-4o-mini`).
+
+The fine-tuned model ensures:
+
+- Consistent validation and identification of incomplete or erroneous user inputs.
+- Simplified downstream processing with structured JSON outputs.
+- Enhanced user experience with reduced response ambiguity
+
 ### Example
 (TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
@@ -308,10 +353,12 @@ To navigate application logs, retrieved documents, and more, use the following c
 
 # TODOs
 
+Finetune done
+
 TODO capture of chatbot interface in document
 
 Refactoring code
 
-Finetune/Deploy improve 
+/Deploy improve 
 
 Minor: unit test (connection db)
