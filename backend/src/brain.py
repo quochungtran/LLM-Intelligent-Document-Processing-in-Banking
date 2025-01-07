@@ -155,6 +155,29 @@ def detect_route(history, message):
     logger.info(f"Route output: {openai_messages}")
     return openai_chat_complete(openai_messages)
 
+
+finetune_model = "ft:gpt-4o-mini-2024-07-18:personal:homeloan-llm:An55Uasr"
+def collect_homeloan_information(history, message):
+    system_prompt = f"""
+    Given the mandatory fields: \"name\", \"income\", \"loan_amount\", \"property_value\", \"loan_term\"(in months), and \"loan_purpose\", 
+    Validate and collect missing or invalid fields.                
+    Return a JSON object with the completed fields.
+    """
+
+    user_prompt = f"""
+    Chat History:
+    {history}
+
+    Latest User Message:
+    {message}
+    """
+    openai_messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ]
+    logger.info(f"Home loan information output: {openai_messages}")
+    return openai_chat_complete(openai_messages, model=finetune_model)
+
 def get_embedding(text, model="text-embedding-3-small"):
     text = text.replace("\n", " ")
     return openai_client.embeddings.create(input=[text], model=model).data[0].embedding

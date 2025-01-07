@@ -96,11 +96,9 @@ def update_chat_conversation(bot_id: str, user_id: str, message: str, is_request
 
     return conversation_id
 
-
 def get_conversation_messages(conversation_id):
     user_conversations = load_conversation(conversation_id)
     return convert_conversation_to_openai_messages(user_conversations)
-
 
 def clean_chat_conversations():
     try:

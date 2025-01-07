@@ -64,3 +64,12 @@ def get_pattern(url):
             return "unknown"
     else:
         return "unknown"
+    
+def is_valid_json(input):
+    try:
+        # Try to serialize and deserialize the variable
+        json.loads(json.dumps(input))
+        return True
+    except (TypeError, ValueError):
+        return False
+    

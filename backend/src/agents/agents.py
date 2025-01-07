@@ -4,7 +4,8 @@ from llama_index.core.base.llms.types import MessageRole, ChatMessage
 import logging
 import sys
 import os
-from src.agents.tools import field_requirements, tools
+from brain import collect_homeloan_information
+from src.agents.tools import detect_invalid_or_missing_fields, field_requirements, tools
 import json
 from src.agents.recommandation import home_loan_recommandation
 
@@ -79,47 +80,31 @@ def convert_raw_messages_to_chat_messages(messages):
         chat_messages.append(chat_message)
     return chat_messages
 
-def is_valid_json(json_string):
-    """
-    Verifies if a string is a valid JSON.
-
-    Args:
-        json_string (str): The string to validate.
-
-    Returns:
-        bool: True if valid JSON, False otherwise.
-    """
-    try:
-        json.loads(json_string)  # Try parsing the string as JSON
-        return True
-    except json.JSONDecodeError:
-        return False
-    
 def bot_agent_home_loan_recommandation_handle(history, message):
     """
     Handles the home loan recommendation workflow using the agent.
     """
     chat_history = convert_raw_messages_to_chat_messages(history)
-    response = asking_key_missing_agent.chat(message=message, chat_history=chat_history)
-    logging.info(f"Agent home loan recommendation response: {response.response}")
-    if is_valid_json(response.response):
-        return home_loan_recommandation(json.loads(response.response))
-    return response.response
-
+    # response = asking_key_missing_agent.chat(message=message, chat_history=chat_history)
+    homeloan_application = collect_homeloan_information(chat_history, message)
+    response             = detect_invalid_or_missing_fields(json.loads(homeloan_application))
+    logging.info(f"Agent home loan recommendation response: {response}")
+    if isinstance(response, dict):
+        return home_loan_recommandation(response)
+    return response
 
 mock_history = [
     {"role": "system", "content": "You are an assistant for loan recommendations."},
-    {"role": "user", "content": "I want to apply for a home loan."},
+    {"role": "user", "content": "I want to apply for a loan."},
     {"role": "assistant", "content": "Please provide more information?"},
 ]
 
 test_cases = [
     {
         "history": mock_history,
-        "question": "I’m John, and I earn 80000 annually. I need 500000, I don't have purpose. My property is valued at 450000. and I need a loan for 360 months. the purpose is home purchase",
+        "question": "I’m John, and I earn 80000 annually. I need 500000. My property is valued at 450000. and I need a loan for 360 months",
     },
 ]
-print(json.dumps(field_requirements))
 history = test_cases[0]["history"]
 question = test_cases[0]["question"]
 

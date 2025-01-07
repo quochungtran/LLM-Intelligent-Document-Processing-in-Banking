@@ -54,7 +54,7 @@ def validate_input(field_name: str, value: str) -> bool:
         return value in valid_purposes
     return False
 
-def detect_invalid_or_missing_fields(**inputs: dict) -> str:
+def detect_invalid_or_missing_fields(inputs: dict) -> str:
     """
     Identifies missing or invalid fields in the user input.
 
@@ -67,18 +67,12 @@ def detect_invalid_or_missing_fields(**inputs: dict) -> str:
     # Iterate through mandatory fields and validate them
     for field in MANDATORY_FIELDS:
         value = inputs.get(field)
-        if not value or not validate_input(field, value):
+        if not value:
             # Return the question for the first missing/invalid field
             return FIELD_QUESTIONS[field]
 
     # If all fields are valid, return the validated fields as JSON
-    return {"name": inputs["name"], 
-            "income": int(inputs["income"]),
-            "loan_term": int(inputs["loan_term"]),
-            "loan_amount": float(inputs["loan_amount"]),
-            "property_value": float(inputs["property_value"]),
-            "loan_purpose" : inputs["loan_purpose"]
-        }
+    return inputs
 
 # Convert tools to FunctionTool
 detect_missing_field_tool = FunctionTool.from_defaults(fn=detect_invalid_or_missing_fields)
