@@ -186,6 +186,8 @@ The Data ingestion focuses on processing data in two primary formats:
 
 The processed data is chunked( into `Node` object represents a "chunk" of a source Document, whether that is a text chunk, an image, or other. similar to Documents) and uploaded to a Qdrant vector database, enabling efficient and accurate retrieval for query answering.
 
+Running `python3 backend/src/rag/rag_flow.py`
+
 ### RAG flow answering
 The service leverages a Routing and Generation (RAG) approach to accurately answer user queries. Here’s a breakdown of the process:
 
@@ -251,8 +253,8 @@ Including 148 questions.
 
 **Current Performance**
 
-- Faithfulness Score: 60%
-- Context Relevancy Score: 65%
+- Faithfulness Score:      85%
+- Context Relevancy Score: 85%
 
 Further optimization is needed to improve these metrics for better alignment and contextual accuracy in responses.
 ### Futher Improvement
@@ -260,10 +262,13 @@ Further optimization is needed to improve these metrics for better alignment and
 - Fine-tuning the embedding and retrieval models for better accuracy.
 
 ### Example
-(TODO: Provide an example of the service in action, including input, processing steps, and final output)
+![faq question: What are the eligibility criteria for home loan refinancing?](image-2.png)
 
 
-## Personnal home loan recommandation
+![faq question: which areas in USA having the most highest housing price ?](image-3.png)
+
+
+## Personnal home loan recommendation
 ### Introduction 
 The service aims to predict and assess a home loan application, identify key missing values in the user's home loan application, and provide/summerize a final recommendation on whether the application is approved or rejected.
 
@@ -304,7 +309,12 @@ This demonstrates fine-tuning a language model to generate consistent, JSON-form
 Notebook Link
 The process for fine-tuning is detailed in `notebooks/finetune.ipynb`.
 
-**Training Data Samples** 
+**Data Samples** 
+
+The training dataset consist of multiples scenarios with different way to express the intent's user, with various expressions,
+the outputs of the model is set up from recognizing the pattern and collect all information with relevant value.
+I have built data training with 41 samples and test set with 24 samples.
+
 Base model : `gpt-4o-mini-2024-07-18`
 
 Fine-tunning job : https://platform.openai.com/finetune/ftjob-ETvCNKRQL9sFw9z2eoOYLrsN?filter=all
@@ -337,9 +347,16 @@ The fine-tuned model ensures:
 - Simplified downstream processing with structured JSON outputs.
 - Enhanced user experience with reduced response ambiguity
 
+As you can see the model release the different output with the same prompting (the fact that we minimize the prompt usage it's not necessary to provide few-shot prompting with output examples)
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
 ### Example
 (TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
+![alt text](image-4.png)
 
 # Demo 
 
