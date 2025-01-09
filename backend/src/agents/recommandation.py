@@ -13,6 +13,32 @@ VALID_CATEGORIES = [
     "43", "44", "45", "46", "47", "48", "49", "50%-60%", ">60%"
 ]
 
+def calculate_dti_ratio(annual_income, loan_amount, loan_term):
+    """
+    Calculate the Debt-to-Income (DTI) Ratio.
+
+    Parameters:
+        annual_income (float): The borrower's annual income.
+        loan_amount (float): The requested loan amount.
+        loan_term_years (int): The loan term in years.
+
+    Returns:
+        float: Debt-to-Income (DTI) Ratio as a percentage.
+    """
+    annual_interest_rate = 0.07
+    monthly_income = annual_income / 12
+    # Monthly interest rate
+    monthly_interest_rate = annual_interest_rate / 12
+
+    # Calculate monthly loan payment using the amortization formula
+    monthly_payment = loan_amount * (monthly_interest_rate * (1 + monthly_interest_rate)**loan_term) / \
+                      ((1 + monthly_interest_rate)**loan_term - 1)
+
+    # Calculate DTI ratio
+    dti_ratio = (monthly_payment / monthly_income) * 100
+
+    return dti_ratio
+
 def map_dti_to_category(dti: float) -> str:
     """
     Maps a numeric DTI value to a categorical range.
@@ -37,7 +63,9 @@ def calculate_metrics_fields(inputs: dict) -> dict:
         if "income" in inputs and "loan_amount" in inputs:
             income = float(inputs["income"])
             loan_amount = float(inputs["loan_amount"])
-            dti = (loan_amount / income) * 100
+            dti = calculate_dti_ratio(inputs["income"],
+                                      inputs['loan_amount'],
+                                      inputs['loan_term'])
             inputs["debt_to_income_ratio"] = map_dti_to_category(dti)
     
     # Calculate LTV if missing

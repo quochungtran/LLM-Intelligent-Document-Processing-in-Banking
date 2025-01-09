@@ -6,7 +6,7 @@ import requests
 import streamlit as st
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-st.title("Chatbot UI")
+st.title("Welcome to the Home Loan Processing Chatbot!")
 
 # Input bot
 bot_id = "botFinance"
