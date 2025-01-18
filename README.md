@@ -22,8 +22,8 @@ In this project, I leverage the LLM power to create a chat bot, two services is 
         * [Evaluate](#evaluate)
         * [Further improvement](#further-improvement)
         * [Example](#example)
-      * [Personnal home loan recommandation](personnal-home-loan-recommandation)
-        * [Introduction](#personnal-home-loan-recommandation)
+      * [Personnal home loan recommandation](#personnal-home-loan-recommandation)
+        * [Introduction](#introduction)
         * [System overview](#system-overview)
         * [Methodologies](#eethodologies)
         * [Example](#example)    
@@ -365,7 +365,6 @@ To explore the Intelligent Home Loan Processing API, visit http://localhost:8082
 To interact with the chatbot application, access http://localhost:8051/ on the host machine.
 
 To navigate application logs, retrieved documents, and more, use the following command:
-
 
 
 # TODOs
