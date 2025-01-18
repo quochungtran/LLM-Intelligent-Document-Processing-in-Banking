@@ -1,4 +1,3 @@
-Intelligence 
 # LLM chat bot - intelligent document processing for home loan applications 
 In this project, I leverage the LLM power to create a chat bot, two services is deployed so far in ly application:
 - FAQ home loan question for different user concerning topic such as market trends, eligibility, etc
