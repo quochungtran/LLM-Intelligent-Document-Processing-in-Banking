@@ -262,10 +262,10 @@ Further optimization is needed to improve these metrics for better alignment and
 - Fine-tuning the embedding and retrieval models for better accuracy.
 
 ### Example
-![faq question: What are the eligibility criteria for home loan refinancing?](image-2.png)
+![faq question: What are the eligibility criteria for home loan refinancing?](images/faq_questions_criteria.png)
 
 
-![faq question: which areas in USA having the most highest housing price ?](image-3.png)
+![faq question: which areas in USA having the most highest housing price ?](images/image-3.png)
 
 
 ## Personnal home loan recommendation
@@ -349,14 +349,14 @@ The fine-tuned model ensures:
 
 As you can see the model release the different output with the same prompting (the fact that we minimize the prompt usage it's not necessary to provide few-shot prompting with output examples)
 
-![alt text](image.png)
+![fine_tune_model_res](images/fine_tune_model_res.png)
 
-![alt text](image-1.png)
+![fine_tune_model_res_1](images/fine_tune_model_res-1.png)
 
 ### Example
 (TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
-![alt text](image-4.png)
+![home_loan_recommandations](images/home_loan_recommandations.png)
 
 # Demo 
 
@@ -370,12 +370,8 @@ To navigate application logs, retrieved documents, and more, use the following c
 
 # TODOs
 
-Finetune done
-
-TODO capture of chatbot interface in document
-
 Refactoring code
 
-/Deploy improve 
+Deploy improve 
 
 Minor: unit test (connection db)
