@@ -1,6 +1,3 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from qdrant_client.models import Distance, VectorParams, PointStruct
 from src.rag.vectordb import QdrantQueryManagement
 
 mock_collection_name     = "mock_collection"
