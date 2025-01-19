@@ -1,6 +1,7 @@
 import logging
 import nest_asyncio
 from llama_index.core import Document
+from llama_index.core.schema import TextNode
 from typing import Any, List
 
 # local import
@@ -27,11 +28,11 @@ class DocumentLoader():
         
         return self._reader.load_data(url)
     
-    def to_node_objects(self, url : str) -> List[Any]:
+    def to_node_objects(self, url : str) -> List[TextNode]:
         document_obj = self.to_doc_objects(url)
         return self._parser.get_nodes_from_documents(document_obj)
 
-    def to_summerized_home_loan_nodes(self, url: str, threshold=5000) -> List[Any]:
+    def to_summerized_home_loan_nodes(self, url: str, threshold=5000) -> List[TextNode]:
         nodes_obj = self.to_node_objects(url)
         for node in nodes_obj:
             doc_content = node.get_content()
