@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 import logging
 
+from llama_index.core.schema import TextNode
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams
 from config import Config
+from src.brain import get_embedding
 
 logger = logging.getLogger(__name__)
-
 
 class VectorDBQueryManagement(ABC):
     @abstractmethod
@@ -42,24 +43,40 @@ class VectorDBQueryManagement(ABC):
         pass
     
     @abstractmethod
-    def get_client():
+    def get_client(self):
         """
         get client
         Args:
             vector_db_client
         """
         pass
+    
+    @abstractmethod
+    def add_doc(self, node_instance: TextNode, collection_name="llm"):
+        """
+        add/embedding document into vector database
+        Args:
+            node_instance: TextNode presented chunking text
+            collection_name: collection name 
+        """
+        pass
 
 class QdrantQueryManagement(VectorDBQueryManagement):
+
+    DEFAULT_VECTOR_SIZE = 1536
+    DEFAULT_DISTANCE_OP = Distance.DOT
+
     def __init__(self, url: str):
         self.client = QdrantClient(url=url)
     
-    def create_collection(self, name, vector_size=1536, distance_op=Distance.DOT):
-        return self.client.create_collection(
-            collection_name=name,
-            vectors_config=VectorParams(size=vector_size, distance=distance_op)
-        )
-    
+    def create_collection(self, name, vector_size=DEFAULT_VECTOR_SIZE, distance_op=DEFAULT_DISTANCE_OP):
+        if not self.client.collection_exists(name):
+            logger.info(f"Creating collection '{name}' with vector size {vector_size} and distance operation {distance_op}.")
+            return self.client.create_collection(
+                collection_name=name,
+                vectors_config=VectorParams(size=vector_size, distance=distance_op)
+            )
+        
     def add_vectors(self, collection_name: str, vectors: dict):
         points = [
             PointStruct(id=k, vector=v["vector"], payload=v["payload"])
@@ -73,8 +90,28 @@ class QdrantQueryManagement(VectorDBQueryManagement):
         )
         return [x.payload for x in results]
 
+    def add_doc(node_instance: TextNode, collection_name="llm"):
+        node_content = node_instance.get_content()
+        if node_content:
+            vector = get_embedding(node_content)
+            logger.info(f"Embedding {node_content} to vector")
+
+            qdrant_client.create_collection(collection_name)
+            qdrant_client.add_vectors(
+                collection_name,
+                {
+                    node_instance.id_: {
+                        "vector": vector,
+                        "payload": {
+                            "content": node_content
+                        }
+                    }
+                }
+            )
+        else:
+            logger.info("Title and content is null")
+    
     def get_client(self):
         return self.client
-    
 
 qdrant_client = QdrantQueryManagement(Config.QDRANT_URL)
