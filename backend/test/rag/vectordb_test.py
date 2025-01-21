@@ -1,9 +1,6 @@
 from src.rag.vectordb import QdrantQueryManagement
 import unittest
 
-mock_collection_name     = "mock_collection"
-mock_db_query_managament = QdrantQueryManagement(url="http://localhost:6333")  # Replace with your Qdrant URL if different
-
 class VectorDatabaseManagementTest(unittest.TestCase):
     def setUp(self):
         self.mock_collection_name = "mock_collection"
