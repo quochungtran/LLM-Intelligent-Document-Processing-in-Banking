@@ -41,7 +41,12 @@ class VectorDBQueryManagement(ABC):
             limit: Number of results to return (default: 4).
         """
         pass
-    
+
+    @abstractmethod
+    def delete_collection(self, collection_name: str):
+        """Delete the collection."""
+        pass
+
     @abstractmethod
     def get_client(self):
         """
@@ -89,6 +94,9 @@ class QdrantQueryManagement(VectorDBQueryManagement):
             collection_name=collection_name, query_vector=query_vector, limit=limit
         )
         return [x.payload for x in results]
+    
+    def delete_collection(self, collection_name):
+        self.client.delete_collection(collection_name=collection_name)
 
     def add_doc(self, node_instance: TextNode, collection_name="llm"):
         node_content = node_instance.get_content()
