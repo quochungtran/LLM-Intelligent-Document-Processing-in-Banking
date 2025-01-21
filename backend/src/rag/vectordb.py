@@ -90,7 +90,7 @@ class QdrantQueryManagement(VectorDBQueryManagement):
         )
         return [x.payload for x in results]
 
-    def add_doc(node_instance: TextNode, collection_name="llm"):
+    def add_doc(self, node_instance: TextNode, collection_name="llm"):
         node_content = node_instance.get_content()
         if node_content:
             vector = get_embedding(node_content)
@@ -109,7 +109,7 @@ class QdrantQueryManagement(VectorDBQueryManagement):
                 }
             )
         else:
-            logger.info("Title and content is null")
+            logger.info("Content is null")
     
     def get_client(self):
         return self.client
