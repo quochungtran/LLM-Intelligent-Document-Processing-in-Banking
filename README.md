@@ -369,7 +369,7 @@ To navigate application logs, retrieved documents, and more, use the following c
 # TODOs
 
 Refactoring code : 
-    - Unit testing for vectordb  
     - Unit testing for maria connection db 
 
-Deploy improve
+Deploy:
+    - Set up Terraform
