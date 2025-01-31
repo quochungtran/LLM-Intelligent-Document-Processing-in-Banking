@@ -1,8 +1,7 @@
-import asyncio
 import logging
 from xml.dom import ValidationErr
 
-from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, func
+from sqlalchemy import Column, Integer, String, Boolean, func
 from database import engine
 
 from sqlalchemy.future import select
@@ -14,7 +13,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from utils import setup_logging
 from database import engine, get_db
 from cache import cache
-import os
 
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
