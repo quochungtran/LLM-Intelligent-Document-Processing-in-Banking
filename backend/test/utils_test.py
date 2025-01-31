@@ -46,5 +46,6 @@ class TestUtils(unittest.TestCase):
     def test_get_pattern(self):
         self.assertEqual(get_pattern("http://example.com/document.pdf"), "pdf")
         self.assertEqual(get_pattern("https://example.com"), "http")
+        self.assertEqual(get_pattern("https://www.lendingtree.com/home/mortgage/minimum-mortgage-requirements/"), "http")
         self.assertEqual(get_pattern("document.pdf"), "pdf")  # Assuming os.path.isfile is False for testing
         self.assertEqual(get_pattern("unknownfile"), "unknown")

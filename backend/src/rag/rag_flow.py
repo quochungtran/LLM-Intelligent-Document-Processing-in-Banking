@@ -17,7 +17,7 @@ from copy import copy
 setup_logging()
 logger = logging.getLogger(__name__)
 
-def getDocumentLoader(url):
+def getDocumentLoader(url: str):
     if get_pattern(url) == "pdf":
         reader = PDFReader()
         parser = SentenceSplitter(
@@ -25,7 +25,7 @@ def getDocumentLoader(url):
             chunk_size=1000,
             chunk_overlap=200,
         )
-        return DocumentLoader(url, reader, parser)
+        return DocumentLoader(reader, parser)
     elif get_pattern(url) == "http":
         FIRE_CRAWL_API_KEY = os.environ.get("FIRE_CRAWL_API_KEY", default=None)
         reader = FireCrawlWebReader(
@@ -33,9 +33,9 @@ def getDocumentLoader(url):
             mode="scrape"
         )
         parser = MarkdownNodeParser()
-        return DocumentLoader(url, reader, parser)
+        return DocumentLoader(reader, parser)
 
-def load_url_data(url):
+def load_data_from(url: str):
     document_loader = getDocumentLoader(url)
     return document_loader.to_summerized_home_loan_nodes(url, threshold=5000)
 
@@ -80,12 +80,12 @@ def rag_flow_implementation(collection_name, urls):
     print(f"Collection: {collection_name}")
     
     for url in urls:
-        doc_objects += load_url_data(url)
+        doc_objects += load_data_from(url)
     
     time.sleep(25)
 
     for doc in doc_objects:
-        qdrant_client.add_doc_to_vector_db(doc, collection_name)
+        qdrant_client.add_doc(doc, collection_name)
     
 topics = ["market_trends", "interest_rate", "eligibility", "financial_choice", "refinancing"]
 def tear_down():
