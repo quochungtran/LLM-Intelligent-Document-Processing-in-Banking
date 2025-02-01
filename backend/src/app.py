@@ -70,5 +70,5 @@ async def get_response(task_id: str):
 async def create_vector_collection(data: Dict):
     collection_name = data.get("collection_data")
     create_status = qdrant_client.create_collection(collection_name)
-    logging.info(f"Create collection {collection_name} status: {create_status}")
+    logger.info(f"Create collection {collection_name} status: {create_status}")
     return {"status": create_status is not None}
