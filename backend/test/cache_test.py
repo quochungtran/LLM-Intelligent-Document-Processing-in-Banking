@@ -1,4 +1,4 @@
-from src.cache import RedisConversationManager
+from database.cache import RedisConversationManager
 from src.utils import *
 
 mock_bot_id  = "bot123"

@@ -10,7 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from src.utils import setup_logging
 from database.database import engine, get_db
-from cache import cache
+from database.cache import cache
 
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
