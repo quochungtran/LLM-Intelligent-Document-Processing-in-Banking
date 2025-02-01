@@ -3,6 +3,8 @@ import redis
 from utils import generate_request_id
 from config import Config
 
+logger = logging.getLogger(__name__)
+
 class RedisConversationManager:
     def __init__(self, host="localhost", port=6379, db=0):
         """
@@ -37,17 +39,17 @@ class RedisConversationManager:
                 logging.info(f"Created new conversation ID for {key}: {conversation_id}")
                 return conversation_id
         except Exception as e:
-            logging.exception(f"Get conversation error: {e}")
+            logger.exception(f"Get conversation error: {e}")
             return None
 
     def clear_conversation_id(self, bot_id, user_id):
         key = self.get_conversation_key(bot_id, user_id)
         try:
             self.redis_client.delete(key)
-            logging.info(f"Successfully deleted conversation ID for {key}")
+            logger.info(f"Successfully deleted conversation ID for {key}")
             return True
         except Exception as e:
-            logging.exception(f"Delete conversation error: {e}")
+            logger.exception(f"Delete conversation error: {e}")
             return False    
         
 cache = RedisConversationManager(host=Config.REDIS_HOST, port=Config.REDIS_PORT)
