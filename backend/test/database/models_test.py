@@ -1,7 +1,5 @@
-import unittest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from src.models import (
+from database.models import (
     ChatConversation,
     load_conversation,
     update_chat_conversation,
@@ -12,7 +10,7 @@ from src.models import (
     db
 )
 
-from src.database import SQLALCHEMY_DATABASE_URL
+from database.database import SQLALCHEMY_DATABASE_URL
 
 # Create engine and session
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

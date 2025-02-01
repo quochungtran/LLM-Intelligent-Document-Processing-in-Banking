@@ -2,21 +2,20 @@ import logging
 from xml.dom import ValidationErr
 
 from sqlalchemy import Column, Integer, String, Boolean, func
-from database import engine
-
 from sqlalchemy.future import select
 from sqlalchemy import Column, String, Boolean, DateTime, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
 
-from utils import setup_logging
-from database import engine, get_db
+from src.utils import setup_logging
+from database.database import engine, get_db
 from cache import cache
 
 Base = declarative_base()
 Base.metadata.create_all(bind=engine)
 db =  next(get_db())
+
 setup_logging()
 logger = logging.getLogger(__name__)
 

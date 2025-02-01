@@ -1,6 +1,6 @@
 from celery import shared_task
 from utils import setup_logging
-from models import *
+from database.models import *
 from brain import openai_chat_complete
 from src.task.rag_task import bot_rag_home_loan_faq_answer_message
 from src.task.agent_task import bot_agent_home_loan_recommandation_answer_message
