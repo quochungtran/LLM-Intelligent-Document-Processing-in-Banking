@@ -198,6 +198,12 @@ The service leverages a Routing and Generation (RAG) approach to accurately answ
 
 - **Generating the Final Answer**: The LLM combines the retrieved documents with the user's query and chat history to generate a comprehensive, context-aware response.
 
+### Execute 
+
+```bash
+python backend/src/rag/rag_flow.py
+```
+
 ### Evaluate 
 
 The evaluation metrics currently in use are:
@@ -369,7 +375,8 @@ To navigate application logs, retrieved documents, and more, use the following c
 # TODOs
 
 Refactoring code : 
-    - Unit testing for maria connection db 
+    - Chat-history db code/validation (done)
+    - AI agent refactoring and validation
 
 Deploy:
     - Set up Terraform
