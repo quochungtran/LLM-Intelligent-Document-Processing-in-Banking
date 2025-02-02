@@ -1,3 +1,9 @@
+TOPICS = ["market_trends", 
+          "interest_rate", 
+          "eligibility", 
+          "financial_choice", 
+          "refinancing"]
+
 DATA_URL = {
     "interest_rate" : [
       "https://www.cnet.com/personal-finance/mortgage-rate-predictions-holiday-week-brings-higher-rates/",
