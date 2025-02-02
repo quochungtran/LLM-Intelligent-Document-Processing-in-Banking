@@ -1,9 +1,7 @@
 from openai import OpenAI
-from redis import InvalidResponse
 import logging
 import json
 from config import Config
-
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +66,7 @@ def summarize_doc_home_loan(doc_content):
         {"role": "user", "content": user_prompt}
     ]
     summarized_txt = openai_chat_complete(openai_messages)
-    logger.info("Home Loan Insights Summary: ", summarized_txt)
+    logger.info("Home Loan Insights Summary: {summarized_txt}")
     return summarized_txt
 
 def generate_conversation_text(conversations):

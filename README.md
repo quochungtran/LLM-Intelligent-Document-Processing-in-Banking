@@ -185,7 +185,6 @@ The Data ingestion focuses on processing data in two primary formats:
 
 The processed data is chunked( into `Node` object represents a "chunk" of a source Document, whether that is a text chunk, an image, or other. similar to Documents) and uploaded to a Qdrant vector database, enabling efficient and accurate retrieval for query answering.
 
-Running `python3 backend/src/rag/rag_flow.py`
 
 ### RAG flow answering
 The service leverages a Routing and Generation (RAG) approach to accurately answer user queries. Here’s a breakdown of the process:
@@ -201,7 +200,7 @@ The service leverages a Routing and Generation (RAG) approach to accurately answ
 ### Execute 
 
 ```bash
-python backend/src/rag/rag_flow.py
+python3 backend/src/rag/rag_flow.py`
 ```
 
 ### Evaluate 
@@ -359,7 +358,6 @@ As you can see the model release the different output with the same prompting (t
 ![fine_tune_model_res_1](images/fine_tune_model_res-1.png)
 
 ### Example
-(TODO: Provide an example of the service in action, including input, processing steps, and final output)
 
 ![home_loan_recommandations](images/home_loan_recommandations.png)
 
@@ -375,7 +373,9 @@ To navigate application logs, retrieved documents, and more, use the following c
 # TODOs
 
 Refactoring code : 
+
     - Chat-history db code/validation (done)
+
     - AI agent refactoring and validation
 
 Deploy:
