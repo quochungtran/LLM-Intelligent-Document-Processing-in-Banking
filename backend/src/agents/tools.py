@@ -1,7 +1,9 @@
 import logging
 from llama_index.core.tools import FunctionTool
+import json
+from function_schema import get_function_schema
+from src.brain import openai_client
 logger = logging.getLogger(__name__)
-
 
 field_requirements = {
     "name": "Must contain alphabetic characters only.",
