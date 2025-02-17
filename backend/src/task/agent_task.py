@@ -1,7 +1,7 @@
 from celery import shared_task
 from utils import setup_logging
 import logging
-from src.agents.agents import bot_agent_home_loan_recommandation_handle
+from src.agents.recommandation_agent import bot_agent_home_loan_recommandation_handle
 
 setup_logging()
 logger = logging.getLogger(__name__)

@@ -1,8 +1,8 @@
 import pytest
 import pytest
 from llama_index.core.base.llms.types import MessageRole, ChatMessage
-from src.agents.agents import convert_raw_messages_to_chat_messages
-from src.agents.agents import bot_agent_home_loan_recommandation_handle
+from src.agents.recommandation_agent import convert_raw_messages_to_chat_messages
+from src.agents.recommandation_agent import bot_agent_home_loan_recommandation_handle
 import json
 
 # Test Cases
