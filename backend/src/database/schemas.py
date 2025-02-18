@@ -20,14 +20,17 @@ class ChatConversation(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
 
-class Profile(Base):
+class HomeLoanProfile(Base):
     __tablename__ = 'homeloan_profile'
-    id   = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100))
-    income = Column(Integer)
-    loan_amount = Column(Integer)
-    loan_term = Column(Integer)
-    loan_to_value_ratio = Column(Float)
-    debt_to_income_ratio = Column(Float)
-    property_value = Column(Integer)
-    home_purpose = Column(String)
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), nullable=False)
+    income = Column(Integer, nullable=False)
+    loan_amount = Column(Integer, nullable=False)
+    loan_term = Column(Integer, nullable=False)
+    loan_to_value_ratio = Column(Float, nullable=False)
+    debt_to_income_ratio = Column(Float, nullable=False)
+    property_value = Column(Float, nullable=False)
+    home_purpose = Column(String(255), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
