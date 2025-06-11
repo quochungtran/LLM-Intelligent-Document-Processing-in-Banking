@@ -26,4 +26,4 @@ class TestUtils(unittest.TestCase):
     def test_generate_request_id_hashing(self):
         request_id1 = generate_request_id(32)
         request_id2 = generate_request_id(32)
-        self.assertEqual(request_id1, request_id2)
+        self.assertNotEqual(request_id1, request_id2)

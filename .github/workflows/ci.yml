@@ -1,0 +1,28 @@
+name: Application CI pipline 
+
+on:
+  push:
+    branches: [ feature/micro-services ]
+  pull_request:
+    branches: [ feature/micro-services ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10.12'
+
+    - name: Install gateway dependencies
+      run: |
+        pip install -r backend/requirements.txt
+
+    - name: Run Gateway Unit Tests
+      run: |
+        pytest backend/common/test/
