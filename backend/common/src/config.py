@@ -1,9 +1,9 @@
 import os
 
 class Config:
-    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", default=None)
-    QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")        
-    
+    OPENAI_API_KEY = os.environ.get("OPEN_API_KEY", default=None)
+    QDRANT_URL     = os.getenv("REDIS_HOST", "http://localhost:6333")
+
     REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
     REDIS_PORT = os.getenv("REDIS_PORT", 6379)
 
