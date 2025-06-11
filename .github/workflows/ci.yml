@@ -21,11 +21,11 @@ jobs:
       
     - name: Set PYTHONPATH
       run: |
-        echo "PYTHONPATH=$PYTHONPATH:$(pwd)/backend" >> $GITHUB_ENV
+        echo "PYTHONPATH=$PYTHONPATH:$(pwd)/backend/common" >> $GITHUB_ENV
 
     - name: Install gateway dependencies
       run: |
-        pip install -r backend/requirements.txt
+        pip install -r requirements.txt
 
     - name: Run Gateway Unit Tests
       run: |
